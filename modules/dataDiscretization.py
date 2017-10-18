@@ -97,6 +97,7 @@ def discretizeGrid(xyz, x_disc, y_disc, z_disc):
         bucket_num = z_bucket*x_disc*y_disc + x_bucket + y_bucket*y_disc
         discretized_data[0,bucket_num] = 1
 
+    #coo matrix
     return discretized_data
 
 
@@ -120,10 +121,18 @@ def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc):
 
     with pytpc.HDFDataFile(hdfPath, 'r') as f:
         n_evts = len(f)
-        discretizedData = sp([n_evts, discElements])
+        #create large sparse matrix
+        #discretizedData = sp.sparse.csr_matrix([n_evts, discElements])
+        discretizedData = np.matrix([n_evts, discElements])
         evt_id = 0
 
         while (evt_id < n_evts):
             curEvt = f[evt_id]
             curxyz = evt.xyzs(peaks_only=True, return_pads=True, baseline_correction=False, cg_times=False)
+
+            #returns numpy array or sparse matrix
+            #will want to add it into discretizedData[evt_id]
             discretizeGrid(curxyz. x_disc, y_disc, z_disc)
+            #list of coo matrics
+            #Vstack
+            #convert to CSR
