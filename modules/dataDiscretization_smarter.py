@@ -1,9 +1,4 @@
 """
-dataDiscretization.py
-=====================
-
-This module contains functions for discretizing 3D point cloud data produced by
-the Active-Target Time Projection Chamber.
 
 """
 import math
@@ -19,54 +14,6 @@ import h5py
 
 DETECTOR_LENGTH = 1000.0
 DETECTOR_RADIUS = 275.0
-
-def discretizeCylindrical(xyz, z_disc, radial_disc, angular_disc):
-    """(Inefficiently) Discretizes AT-TPC point cloud data using a cylindrical
-    geometry. We found that this strategy forces an inappropriate geometry on
-    our data.
-
-    Parameters
-    ----------
-    xyz          : point cloud data with shape (n,5) where n is the number of traces
-    z_disc       : number of slices in z
-    radial_disc  : number of radial slices/concentric circles
-    angular_disc : number of angular wedge slices
-
-    Returns
-    -------
-    The discretized data in an array of shape (1, z_disc*radial_disc*angular_disc)
-    """
-    #calculate dimensional increments
-    z_inc = DETECTOR_LENGTH/z_disc
-    radial_inc = DETECTOR_RADIUS/radial_disc
-    angular_inc = (2*math.pi)/angular_disc
-
-    #create slice boundary arrays
-    z_slices = np.arange(DETECTOR_LENGTH, 0.0-z_inc, -z_inc)
-    radial_slices = np.arange(DETECTOR_RADIUS, 0.0-radial_inc, -radial_inc)
-    angular_slices = np.arange(-math.pi, math.pi+angular_inc, angular_inc)
-
-
-    discretized_data = np.zeros((1,z_disc*radial_disc*angular_disc))
-    discretized_xyz = np.zeros([xyz.shape[0],xyz.shape[1]])
-    bucket_num = 0
-    num_pts = 0
-
-    for i in range(len(z_slices)-1):
-        for j in range(len(radial_slices)-1):
-            for k in range(len(angular_slices)-1):
-                for point in xyz:
-                    if ((z_slices[i] > point[2] > z_slices[i+1]) and
-                    (radial_slices[j] > math.sqrt(point[0]**2+ point[1]**2) > radial_slices[j+1]) and
-                    (angular_slices[k] < math.atan2(point[1], point[0])  < angular_slices[k+1])):
-
-                        discretized_data[0][bucket_num] = 1
-                        num_pts += 1
-
-            bucket_num += 1
-
-    return discretized_data
-
 
 def discretizeGrid(xyz, x_disc, y_disc, z_disc):
     """Discretizes AT-TPC point cloud data using a grid geometry.
@@ -102,11 +49,13 @@ def discretizeGrid(xyz, x_disc, y_disc, z_disc):
         buckets.append(bucket_num)
 
     cols = np.unique(buckets)
-    rows = np.zeros(len(cols))
-    data = np.ones(len(cols))
+    #rows = np.zeros(len(cols))
+    #data = np.ones(len(cols))
 
-    discretized_data = sp.sparse.csr_matrix((data, (rows, cols)), shape=(1, discElements))
-    return discretized_data
+    #discretized_data = sp.sparse.csr_matrix((data, (rows, cols)), shape=(1, discElements))
+    #return discretized_data
+
+    return cols
 
 
 def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc):
@@ -132,14 +81,25 @@ def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc):
         n_evts = len(f)
         evt_id = 0
 
+
         while (evt_id < 1000):
             curEvt = f[evt_id]
             curxyz = curEvt.xyzs(peaks_only=True, return_pads=True, baseline_correction=False, cg_times=False)
+
             discEvts.append(discretizeGrid(curxyz, x_disc, y_disc, z_disc))
+
             if (evt_id%10 == 0):
                 print("Discretized event " + str(evt_id))
             evt_id += 1
 
-    discretized_data = sp.sparse.vstack(discEvts, format='csr')
+    discretized_data = []
+    for evt in discEvts:
+        rows = np.zeros(len(evt))
+        data = np.ones(len(evt))
+
+        discretized_data.append(sp.sparse.csr_matrix((data, (rows, evt)), shape=(1, discElements)))
+
+    discretized_data_mat = sp.sparse.vstack(discretized_data, format='csr')
+
     print("Data discretization complete.")
-    return discretized_data
+    return discretized_data_mat
