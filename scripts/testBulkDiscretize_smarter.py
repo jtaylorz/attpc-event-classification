@@ -1,6 +1,8 @@
 """
 Testing discretization modules
 """
+import sys
+sys.path.insert(0, '/home/taylor/Documents/independent-research/modules/')
 import dataDiscretization_smarter as dds
 import scipy as sp
 
