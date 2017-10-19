@@ -98,7 +98,7 @@ def discretizeGrid(xyz, x_disc, y_disc, z_disc):
         y_bucket = math.floor(((point[1]+DETECTOR_RADIUS)/(2*DETECTOR_RADIUS))*y_disc)
         z_bucket = math.floor((point[2]/DETECTOR_LENGTH)*z_disc)
 
-        bucket_num = z_bucket*x_disc*y_disc + x_bucket + y_bucket*y_disc
+        bucket_num = z_bucket*x_disc*y_disc + x_bucket + y_bucket*x_disc
         buckets.append(bucket_num)
 
     cols = np.unique(buckets)
@@ -134,7 +134,8 @@ def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc):
 
         while (evt_id < 1000):
             curEvt = f[evt_id]
-            curxyz = curEvt.xyzs(peaks_only=True, return_pads=True, baseline_correction=False, cg_times=False)
+            curxyz = curEvt.xyzs(peaks_only=True, return_pads=False, baseline_correction=False, cg_times=False)
+            #pass first 3 coordinates
             discEvts.append(discretizeGrid(curxyz, x_disc, y_disc, z_disc))
             if (evt_id%10 == 0):
                 print("Discretized event " + str(evt_id))
