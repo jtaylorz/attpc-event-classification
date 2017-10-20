@@ -10,5 +10,8 @@ modules/__pycache__/*
 # data directory
 data/*
 
-#event-gen directory
+# event-gen directory
 event-gen/*
+
+# plot directory
+plots/*
