@@ -3,3 +3,6 @@
 
 # Backups
 *~
+
+# pycaches
+__pycache__

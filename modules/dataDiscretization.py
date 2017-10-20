@@ -132,12 +132,12 @@ def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc):
         n_evts = len(f)
         evt_id = 0
 
-        while (evt_id < 1000):
+        while (evt_id < n_evts):
             curEvt = f[evt_id]
             curxyz = curEvt.xyzs(peaks_only=True, return_pads=False, baseline_correction=False, cg_times=False)
             #pass first 3 coordinates
             discEvts.append(discretizeGrid(curxyz, x_disc, y_disc, z_disc))
-            if (evt_id%10 == 0):
+            if (evt_id%1000 == 0):
                 print("Discretized event " + str(evt_id))
             evt_id += 1
 
