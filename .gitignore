@@ -5,7 +5,7 @@
 *~
 
 # pycaches
-modules/__pycache__/*
+modules/__*
 
 # data directory
 data/*
