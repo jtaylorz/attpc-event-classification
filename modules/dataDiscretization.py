@@ -69,7 +69,8 @@ def discretizeCylindrical(xyz, z_disc, radial_disc, angular_disc):
 
 
 def discretizeGrid(xyz, x_disc, y_disc, z_disc):
-    """Discretizes AT-TPC point cloud data using a grid geometry.
+    """Discretizes AT-TPC point cloud data using a grid geometry based on
+    whether or not a point exists in a given volumetric bucket.
 
     Parameters
     ----------
@@ -107,6 +108,49 @@ def discretizeGrid(xyz, x_disc, y_disc, z_disc):
 
     discretized_data = sp.sparse.csr_matrix((data, (rows, cols)), shape=(1, discElements))
     return discretized_data
+
+
+def discretizeGridCharge(xyz, x_disc, y_disc, z_disc):
+    """Discretizes AT-TPC point cloud data using a grid geometry by totalling
+    charge in each bucket.
+
+    Parameters
+    ----------
+    xyz    : point cloud data with shape (n,5) where n is the number of traces
+    x_disc : number of slices in x
+    y disc : number of slices in y
+    z_disc : number of slices in z
+
+    Returns
+    -------
+    The discretized data in a csr sparse matrix of shape (1, x_disc*y_disc*z_disc)
+    """
+
+    #calculate desired discretization resolution
+    discElements = x_disc*y_disc*z_disc
+
+    #calculate dimensional increments
+    x_inc = (2*DETECTOR_RADIUS)/x_disc
+    y_inc = (2*DETECTOR_RADIUS)/y_disc
+    z_inc = DETECTOR_LENGTH/z_disc
+
+    buckets = []
+
+    for point in xyz:
+        x_bucket = math.floor(((point[0]+DETECTOR_RADIUS)/(2*DETECTOR_RADIUS))*x_disc)
+        y_bucket = math.floor(((point[1]+DETECTOR_RADIUS)/(2*DETECTOR_RADIUS))*y_disc)
+        z_bucket = math.floor((point[2]/DETECTOR_LENGTH)*z_disc)
+
+        bucket_num = z_bucket*x_disc*y_disc + x_bucket + y_bucket*x_disc
+        buckets.append(bucket_num)
+
+    cols = np.unique(buckets)
+    rows = np.zeros(len(cols))
+    data = np.ones(len(cols))
+
+    discretized_data = sp.sparse.csr_matrix((data, (rows, cols)), shape=(1, discElements))
+    return discretized_data
+
 
 
 def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc):

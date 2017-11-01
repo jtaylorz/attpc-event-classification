@@ -48,7 +48,7 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 #fit the model with a validation set split
-model.fit(full_data.todense(), full_labels, validation_split=0.25, epochs=1, batch_size=10)
+model.fit(full_data.todense(), full_labels, validation_split=0.25, epochs=50, batch_size=10)
 
 #evaluate the model
 scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
@@ -57,10 +57,10 @@ print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 model_path = '/home/taylor/Documents/independent-research/networks/20x20x20/'
 
-# serialize model to YAML
-model_yaml = model.to_yaml()
-with open(model_path + "basicNN.yaml", "w") as yaml_file:
-    yaml_file.write(model_yaml)
-# serialize weights to HDF5
-model.save_weights(model_path + "basicNN.h5")
-print("Saved model to disk")
+# # serialize model to YAML
+# model_yaml = model.to_yaml()
+# with open(model_path + "basicNN.yaml", "w") as yaml_file:
+#     yaml_file.write(model_yaml)
+# # serialize weights to HDF5
+# model.save_weights(model_path + "basicNN.h5")
+# print("Saved model to disk")
