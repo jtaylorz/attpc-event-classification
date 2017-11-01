@@ -13,5 +13,11 @@ data/*
 # event-gen directory
 event-gen/*
 
+# networks directory
+networks/*
+
 # plot directory
 plots/*
+
+# req-files directory
+req-files/*
