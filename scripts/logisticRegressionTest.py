@@ -20,7 +20,7 @@ print(full_labels.shape)
 
 X_train, X_test, y_train, y_test = train_test_split(full_data, full_labels, test_size=0.25, random_state=0)
 
-reg = 10e-6
+reg = 1
 iterations = 1000
 
 lr = LogisticRegression(C=reg, max_iter=iterations)

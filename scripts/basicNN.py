@@ -1,6 +1,7 @@
 """
 Testing a basic neural network on nuclear scattering data.
 """
+import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense
 from sklearn.model_selection import train_test_split
@@ -48,19 +49,38 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 #fit the model with a validation set split
-model.fit(full_data.todense(), full_labels, validation_split=0.25, epochs=50, batch_size=10)
+history = model.fit(full_data.todense(), full_labels, validation_split=0.25, epochs=100, batch_size=10)
 
 #evaluate the model
 scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 
-model_path = '/home/taylor/Documents/independent-research/networks/20x20x20/'
+print(history.history.keys())
+# summarize history for accuracy
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('single layer NN accuracy - no charge 20x20x20')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('/home/taylor/Documents/independent-research/plots/basicNN_charge20x20x20_acc.pdf')
+# summarize history for loss
+plt2.plot(history.history['loss'])
+plt2.plot(history.history['val_loss'])
+plt2.title('single layer NN loss - no charge 20x20x20')
+plt2.ylabel('loss')
+plt2.xlabel('epoch')
+plt2.legend(['train', 'test'], loc='upper left')
+plt2.savefig('/home/taylor/Documents/independent-research/plots/basicNN_charge20x20x20_loss.pdf')
 
-# # serialize model to YAML
-# model_yaml = model.to_yaml()
-# with open(model_path + "basicNN.yaml", "w") as yaml_file:
-#     yaml_file.write(model_yaml)
-# # serialize weights to HDF5
-# model.save_weights(model_path + "basicNN.h5")
-# print("Saved model to disk")
+
+model_path = '/home/taylor/Documents/independent-research/models/20x20x20/'
+
+# serialize model to YAML
+model_yaml = model.to_yaml()
+with open(model_path + "basicNN_charge.yaml", "w") as yaml_file:
+    yaml_file.write(model_yaml)
+# serialize weights to HDF5
+model.save_weights(model_path + "basicNN_charge.h5")
+print("Saved model to disk")
