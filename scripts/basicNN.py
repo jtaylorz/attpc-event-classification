@@ -58,21 +58,22 @@ print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 print(history.history.keys())
 # summarize history for accuracy
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-plt.title('single layer NN accuracy - no charge 20x20x20')
-plt.ylabel('accuracy')
+accuracy_plot = plt.plot()
+accuracy_plot.plot(history.history['acc'])
+accuracy_plot.plot(history.history['val_acc'])
+accuracy_plot.title('single layer NN accuracy - no charge 20x20x20')
+accuracy_plot.ylabel('accuracy')
+accuracy_plot.xlabel('epoch')
+accuracy_plot.legend(['train', 'test'], loc='upper left')
+accuracy_plot.savefig('/home/taylor/Documents/independent-research/plots/basicNN_charge20x20x20_acc.pdf')
+# summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('single layer NN loss - no charge 20x20x20')
+plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('/home/taylor/Documents/independent-research/plots/basicNN_charge20x20x20_acc.pdf')
-# summarize history for loss
-plt2.plot(history.history['loss'])
-plt2.plot(history.history['val_loss'])
-plt2.title('single layer NN loss - no charge 20x20x20')
-plt2.ylabel('loss')
-plt2.xlabel('epoch')
-plt2.legend(['train', 'test'], loc='upper left')
-plt2.savefig('/home/taylor/Documents/independent-research/plots/basicNN_charge20x20x20_loss.pdf')
+plt.savefig('/home/taylor/Documents/independent-research/plots/basicNN_charge20x20x20_loss.pdf')
 
 
 model_path = '/home/taylor/Documents/independent-research/models/20x20x20/'

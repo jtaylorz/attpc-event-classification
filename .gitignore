@@ -21,3 +21,6 @@ plots/*
 
 # req-files directory
 req-files/*
+
+# DS_store
+.DS_store

@@ -45,6 +45,11 @@ with HDFDataFile('/home/taylor/Documents/independent-research/data/p_placeholder
 
         pyevt = sim.convert_event(evt, evt_id)
 
+        # if noise
+        # drop a few points %
+        # add some random noise
+
+
         hdf.write_get_event(pyevt)
         print("Wrote event " + str(evt_id) + " with " + str(len(pyevt.traces)) + " traces")
         evt_id += 1
