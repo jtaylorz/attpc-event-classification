@@ -70,7 +70,7 @@ def discretizeCylindrical(xyz, z_disc, radial_disc, angular_disc):
 
 def discretizeGrid(xyz, x_disc, y_disc, z_disc):
     """Discretizes AT-TPC point cloud data using a grid geometry based on
-    whether or not a point exists in a given volumetric bucket.
+    whether or not a point exists in a given rectangular bucket.
 
     Parameters
     ----------
@@ -112,7 +112,7 @@ def discretizeGrid(xyz, x_disc, y_disc, z_disc):
 
 def discretizeGridCharge(xyz, x_disc, y_disc, z_disc):
     """Discretizes AT-TPC point cloud data using a grid geometry by totalling
-    charge in each bucket.
+    charge of hits in a given rectangular bucket.
 
     Parameters
     ----------
@@ -135,6 +135,7 @@ def discretizeGridCharge(xyz, x_disc, y_disc, z_disc):
     z_inc = DETECTOR_LENGTH/z_disc
 
     buckets = []
+    charges = []
 
     for point in xyz:
         x_bucket = math.floor(((point[0]+DETECTOR_RADIUS)/(2*DETECTOR_RADIUS))*x_disc)
@@ -143,17 +144,19 @@ def discretizeGridCharge(xyz, x_disc, y_disc, z_disc):
 
         bucket_num = z_bucket*x_disc*y_disc + x_bucket + y_bucket*x_disc
         buckets.append(bucket_num)
+        #scaling by factor of 1000
+        charges.append(point[3]/1000)
 
-    cols = np.unique(buckets)
+
+    cols = buckets
     rows = np.zeros(len(cols))
-    data = np.ones(len(cols))
+    data = charges
 
-    discretized_data = sp.sparse.csr_matrix((data, (rows, cols)), shape=(1, discElements))
-    return discretized_data
+    #automatically sums charge values for data occuring at the (row, col)
+    discretized_data_sparse_CHARGE  = sp.sparse.csr_matrix((data, (rows, cols)), shape=(1, discElements))
+    return discretized_data_sparse_CHARGE
 
-
-
-def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc):
+def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc, charge):
     """Discretizes all events in an HDF file using a grid geometry.
 
     Parameters
@@ -179,8 +182,10 @@ def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc):
         while (evt_id < n_evts):
             curEvt = f[evt_id]
             curxyz = curEvt.xyzs(peaks_only=True, return_pads=False, baseline_correction=False, cg_times=False)
-            #pass first 3 coordinates
-            discEvts.append(discretizeGrid(curxyz, x_disc, y_disc, z_disc))
+            if (charge == True):
+                discEvts.append(discretizeGridCharge(curxyz, x_disc, y_disc, z_disc))
+            else:
+                discEvts.append(discretizeGrid(curxyz, x_disc, y_disc, z_disc))
             if (evt_id%1000 == 0):
                 print("Discretized event " + str(evt_id))
             evt_id += 1
