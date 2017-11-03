@@ -16,7 +16,10 @@ event-gen/*
 # networks directory
 networks/*
 
-# plot directory
+# models directory
+models/*
+
+# plots directory
 plots/*
 
 # req-files directory
