@@ -76,7 +76,7 @@ def discretizeGrid(xyz, x_disc, y_disc, z_disc):
     ----------
     xyz    : point cloud data with shape (n,5) where n is the number of traces
     x_disc : number of slices in x
-    y disc : number of slices in y
+    y disc : number of sliceuniform_param_generators in y
     z_disc : number of slices in z
 
     Returns
@@ -126,7 +126,7 @@ def discretizeGridCharge(xyz, x_disc, y_disc, z_disc):
     The discretized data in a csr sparse matrix of shape (1, x_disc*y_disc*z_disc)
     """
 
-    #calculate desired discretization resolution
+    #calculate desired discreuniform_param_generatortization resolution
     discElements = x_disc*y_disc*z_disc
 
     #calculate dimensional increments
@@ -156,7 +156,35 @@ def discretizeGridCharge(xyz, x_disc, y_disc, z_disc):
     discretized_data_sparse_CHARGE  = sp.sparse.csr_matrix((data, (rows, cols)), shape=(1, discElements))
     return discretized_data_sparse_CHARGE
 
-def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc, charge):
+
+def addNoise(cleanxyz):
+    """Adds random noise to an undiscretized Event object.
+
+    Parameters
+    ----------
+    cleanxyz : point cloud data with shape (n,5)
+
+    Returns
+    -------
+    Point cloud data augmented with random noise
+    """
+    num_noisepts = np.random.randint(20, 300,)
+
+    #generate x and y based on random pad numbers
+    paddresses = np.random.randint(0,10240, (num_noisepts, 1))
+    pads = pytpc.generate_pad_plane()
+    pcenters = pads.mean(1)
+    xys = pcenters[paddresses].reshape(num_noisepts, 2)
+
+    #z and charge values are generated randomly in realistic ranges
+    zs = np.random.uniform(0, DETECTOR_LENGTH, (num_noisepts, 1))
+    charges = np.random.uniform(1, 4000, (num_noisepts, 1))
+    #noise_mat = np.hstack((xys, zs, charges, paddresses))
+    noise_mat = np.hstack((xys, zs, charges))
+    return np.vstack((cleanxyz, noise_mat))
+
+
+def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc, charge, noise):
     """Discretizes all events in an HDF file using a grid geometry.
 
     Parameters
@@ -165,6 +193,9 @@ def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc, charge):
     x_disc  : number of slices in x
     y disc  : number of slices in y
     z_disc  : number of slices in z
+    charge  : boolean variable denoting whether or not charge will be included
+              in the discretization
+    noise   : boolean variable to add noise to (simulated) data
 
     Returns
     -------
@@ -182,6 +213,10 @@ def bulkDiscretize(hdfPath, x_disc, y_disc, z_disc, charge):
         while (evt_id < n_evts):
             curEvt = f[evt_id]
             curxyz = curEvt.xyzs(peaks_only=True, return_pads=False, baseline_correction=False, cg_times=False)
+
+            if (noise == True):
+                curxyz = addNoise(curxyz)
+
             if (charge == True):
                 discEvts.append(discretizeGridCharge(curxyz, x_disc, y_disc, z_disc))
             else:

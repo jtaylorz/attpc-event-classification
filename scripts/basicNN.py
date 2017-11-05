@@ -65,7 +65,7 @@ plt.title('single layer NN accuracy - no charge 20x20x20')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('/home/taylor/Documents/independent-research/plots/basicNN_nocharge20x20x20_acc.pdf')
+plt.savefig('/home/taylor/Documents/independent-research/plots/results/basicNN_nocharge20x20x20_acc.pdf')
 # summarize history for loss
 plt.figure(2)
 plt.plot(history.history['loss'])
@@ -74,7 +74,7 @@ plt.title('single layer NN loss - nocharge 20x20x20')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('/home/taylor/Documents/independent-research/plots/basicNN_nocharge20x20x20_loss.pdf')
+plt.savefig('/home/taylor/Documents/independent-research/plots/results/basicNN_nocharge20x20x20_loss.pdf')
 
 
 model_path = '/home/taylor/Documents/independent-research/models/20x20x20/'
