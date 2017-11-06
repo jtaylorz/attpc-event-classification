@@ -1,5 +1,5 @@
 """
-Testing discretization modules
+Bulk discretization of h5 formatted point cloud data.
 """
 import sys
 sys.path.insert(0, '/home/taylor/Documents/independent-research/modules/')
@@ -10,7 +10,7 @@ import scipy as sp
 CHARGE = True
 NOISE = True
 
-p_data = dd.bulkDiscretize('/home/taylor/Documents/independent-research/data/20x20x20/p_40000.h5', 20, 20, 20, CHARGE, NOISE)
+p_data = dd.bulkDiscretize('/home/taylor/Documents/independent-research/data/p_40000.h5', 20, 20, 20, CHARGE, NOISE)
 #sp.sparse.save_npz('/home/taylor/Documents/independent-research/data/20x20x20/pDisc_40000_charge_NOISE.npz', p_data)
 
 print (p_data.shape)

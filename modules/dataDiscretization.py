@@ -131,6 +131,7 @@ def discretizeGridCharge(xyz, x_disc, y_disc, z_disc):
 
     #calculate dimensional increments
     x_inc = (2*DETECTOR_RADIUS)/x_disc
+
     y_inc = (2*DETECTOR_RADIUS)/y_disc
     z_inc = DETECTOR_LENGTH/z_disc
 

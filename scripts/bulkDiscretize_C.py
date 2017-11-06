@@ -10,7 +10,7 @@ import scipy as sp
 CHARGE = True
 NOISE = True
 
-C_data = dd.bulkDiscretize('/home/taylor/Documents/independent-research/data/20x20x20/C_40000.h5', 20, 20, 20, CHARGE, NOISE)
+C_data = dd.bulkDiscretize('/home/taylor/Documents/independent-research/data/C_40000.h5', 20, 20, 20, CHARGE, NOISE)
 #sp.sparse.save_npz('/home/taylor/Documents/independent-research/data/20x20x20/CDisc_40000_charge_NOISE.npz', C_data)
 
 print (C_data.shape)

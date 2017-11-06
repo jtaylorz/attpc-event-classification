@@ -11,9 +11,10 @@ import scipy as sp
 #fix random seed
 np.random.seed(7)
 
+## 8 things to change total per run ##
 #loading and splitting data
-p_data = sp.sparse.load_npz('/home/taylor/Documents/independent-research/data/20x20x20/pDisc_40000_nocharge.npz')
-C_data = sp.sparse.load_npz('/home/taylor/Documents/independent-research/data/20x20x20/CDisc_40000_nocharge.npz')
+p_data = sp.sparse.load_npz('/home/taylor/Documents/independent-research/data/20x20x20/pDisc_40000_charge_NOISE.npz')
+C_data = sp.sparse.load_npz('/home/taylor/Documents/independent-research/data/20x20x20/CDisc_40000_charge_NOISE.npz')
 p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
 
@@ -61,28 +62,28 @@ print(history.history.keys())
 plt.figure(1)
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
-plt.title('single layer NN accuracy - no charge 20x20x20')
+plt.title('single layer NN accuracy - noise 20x20x20')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('/home/taylor/Documents/independent-research/plots/results/basicNN_nocharge20x20x20_acc.pdf')
+plt.savefig('/home/taylor/Documents/independent-research/plots/results/basicNN_chargeNOISE_20x20x20_acc.pdf')
 # summarize history for loss
 plt.figure(2)
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
-plt.title('single layer NN loss - nocharge 20x20x20')
+plt.title('single layer NN loss - noise 20x20x20')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('/home/taylor/Documents/independent-research/plots/results/basicNN_nocharge20x20x20_loss.pdf')
+plt.savefig('/home/taylor/Documents/independent-research/plots/results/basicNN_chargeNOISE_20x20x20_loss.pdf')
 
 
 model_path = '/home/taylor/Documents/independent-research/models/20x20x20/'
 
 # serialize model to YAML
 model_yaml = model.to_yaml()
-with open(model_path + "basicNN_nocharge.yaml", "w") as yaml_file:
+with open(model_path + "basicNN_NOISE.yaml", "w") as yaml_file:
     yaml_file.write(model_yaml)
 # serialize weights to HDF5
-model.save_weights(model_path + "basicNN_nocharge.h5")
+model.save_weights(model_path + "basicNN_NOISE.h5")
 print("Saved model to disk")
