@@ -11,7 +11,7 @@ import pytpc
 import yaml
 import h5py
 
-with open('/home/taylor/Documents/independent-research/req-files/config_e15503b_C.yml', 'r') as f:
+with open('../req-files/config_e15503b_C.yml', 'r') as f:
     config = yaml.load(f)
 
 beam_enu0 = config['beam_enu0']
@@ -31,7 +31,7 @@ Cgen = uniform_param_generator(beam_enu0, beam_mass, beam_charge, mass_num, max_
 
 sim = EventSimulator(config)
 
-with HDFDataFile('/home/taylor/Documents/independent-research/data/C_placeholder.h5', 'w') as hdf:
+with HDFDataFile('../data/C_placeholder.h5', 'w') as hdf:
     evt_id = 0
     for C in Cgen:
         if(evt_id > num_evts):

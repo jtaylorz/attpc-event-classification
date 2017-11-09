@@ -8,8 +8,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 
-p_data = sp.sparse.load_npz('/home/taylor/Documents/independent-research/data/20x20x20/pDisc_40000_nocharge.npz')
-C_data = sp.sparse.load_npz('/home/taylor/Documents/independent-research/data/20x20x20/CDisc_40000_nocharge.npz')
+p_data = sp.sparse.load_npz('../data/NO_tilt/wrong_detector_length/20x20x20/pDisc_40000_nocharge.npz')
+C_data = sp.sparse.load_npz('../data/NO_tilt/wrong_detector_length/20x20x20/CDisc_40000_nocharge.npz')
 p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
 
