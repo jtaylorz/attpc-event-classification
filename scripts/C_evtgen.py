@@ -31,7 +31,7 @@ Cgen = uniform_param_generator(beam_enu0, beam_mass, beam_charge, mass_num, max_
 
 sim = EventSimulator(config)
 
-with HDFDataFile('../data/C_placeholder.h5', 'w') as hdf:
+with HDFDataFile('../data/tilt/C_40000_tilt.h5', 'w') as hdf:
     evt_id = 0
     for C in Cgen:
         if(evt_id > num_evts):

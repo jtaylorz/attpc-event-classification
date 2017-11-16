@@ -15,17 +15,17 @@ pedestals_path: /home/taylor/Documents/independent-research/event-gen/Pedestals2
 # Detector conditions
 # ===================
 
-#tilt: 6.2  # in degrees
-tilt: 0.0  # in degrees
+tilt: 6.2  # in degrees
+#tilt: 0.0  # in degrees
 pad_rot_angle: -108  # in degrees
 
 # vdmag: -5.2  # drift velocity magnitude in cm/us
-# vd: [-0.0603573 , -0.55178666, -5.14005679]  # in cm/us, in the detector frame
-vd: [ 0. , 0. , -5.2]  # in cm/us, in the detector frame
+vd: [-0.0603573 , -0.55178666, -5.14005679]  # in cm/us, in the detector frame
+#vd: [ 0. , 0. , -5.2]  # in cm/us, in the detector frame
 
 # efieldMag: 9500  #V/m
-# efield: [    0.        , -1025.99387921,  9444.43415774]  # in SI units, in the uvw/lab frame
-efield:  [ 0. , 0. , 9500.]  # in SI units, in the uvw/lab frame
+efield: [    0.        , -1025.99387921,  9444.43415774]  # in SI units, in the uvw/lab frame
+#efield:  [ 0. , 0. , 9500.]  # in SI units, in the uvw/lab frame
 bfield: [ 0.  ,  0.  ,  1.68]  # in Tesla, in the uvw/lab frame
 # bfield_correction: 1.76
 

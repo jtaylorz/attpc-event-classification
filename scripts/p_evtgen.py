@@ -31,7 +31,7 @@ pgen = uniform_param_generator(beam_enu0, beam_mass, beam_charge, mass_num, max_
 
 sim = EventSimulator(config)
 
-with HDFDataFile('../data/p_placeholder.h5', 'w') as hdf:
+with HDFDataFile('../data/tilt/p_40000_tilt.h5', 'w') as hdf:
     evt_id = 0
     for p in pgen:
         if(evt_id > num_evts):
@@ -44,11 +44,6 @@ with HDFDataFile('../data/p_placeholder.h5', 'w') as hdf:
                 continue;
 
         pyevt = sim.convert_event(evt, evt_id)
-
-        # if noise
-        # drop a few points %
-        # add some random noise
-
 
         hdf.write_get_event(pyevt)
         print("Wrote event " + str(evt_id) + " with " + str(len(pyevt.traces)) + " traces")
