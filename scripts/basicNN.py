@@ -13,8 +13,8 @@ np.random.seed(7)
 
 ## 8 things to change total per run ##
 #loading and splitting data
-p_data = sp.sparse.load_npz('/home/taylor/Documents/independent-research/data/20x20x20/pDisc_40000_charge_NOISE.npz')
-C_data = sp.sparse.load_npz('/home/taylor/Documents/independent-research/data/20x20x20/CDisc_40000_charge_NOISE.npz')
+p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_40000_20x20x20_tilt.npz')
+C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_40000_20x20x20_tilt.npz')
 p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
 
