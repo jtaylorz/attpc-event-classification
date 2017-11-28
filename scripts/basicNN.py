@@ -10,11 +10,14 @@ import scipy as sp
 
 #fix random seed
 np.random.seed(7)
+epochs = 100
+validation_split = 0.25
+batch_size = 10
 
 ## 8 things to change total per run ##
 #loading and splitting data
-p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_40000_20x20x20_tilt.npz')
-C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_40000_20x20x20_tilt.npz')
+p_data = sp.sparse.load_npz('../data/NO-tilt/wrong-detector-length/20x20x20/pDisc_40000_charge.npz')
+C_data = sp.sparse.load_npz('../data/NO-tilt/wrong-detector-length/20x20x20/CDisc_40000_charge.npz')
 p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
 
@@ -22,24 +25,6 @@ full_data = sp.sparse.vstack([p_data, C_data], format='csr')
 full_labels = np.hstack((p_labels, C_labels))
 print(full_data.shape)
 print(full_labels.shape)
-
-#custom batch generator for sparse matrix supportS
-# def nn_batch_generator(X_data, y_data, batch_size):
-#     samples_per_epoch = X_data.shape[0]
-#     number_of_batches = samples_per_epoch/batch_size
-#     counter=0
-#     index = np.arange(np.shape(y_data)[0])
-#     while 1:
-#         index_batch = index[batch_size*counter:batch_size*(counter+1)]
-#         X_batch = X_data[index_batch,:].todense()
-#         y_batch = y_data[index_batch]
-#         counter += 1
-#         yield np.array(X_batch),y_batch
-#         if (counter > number_of_batches):
-#             counter=0
-
-
-#X_train, X_test, y_train, y_test = train_test_split(full_data, full_labels, test_size=0.25, random_state=0)
 
 #define model
 model = Sequential()
@@ -50,40 +35,39 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 #fit the model with a validation set split
-history = model.fit(full_data.todense(), full_labels, validation_split=0.25, epochs=100, batch_size=10)
+history = model.fit(full_data.todense(), full_labels, validation_split=validation_split, epochs=epochs, batch_size=batch_size)
 
 #evaluate the model
 scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
-print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
-
 
 print(history.history.keys())
 # summarize history for accuracy
 plt.figure(1)
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
-plt.title('single layer NN accuracy - noise 20x20x20')
+plt.title('single layer NN accuracy - charge')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('/home/taylor/Documents/independent-research/plots/results/basicNN_chargeNOISE_20x20x20_acc.pdf')
+plt.savefig('../plots/results/wrong-detector-length/basicNN_charge_20x20x20_acc.pdf')
 # summarize history for loss
 plt.figure(2)
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
-plt.title('single layer NN loss - noise 20x20x20')
+plt.title('single layer NN loss - charge')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('/home/taylor/Documents/independent-research/plots/results/basicNN_chargeNOISE_20x20x20_loss.pdf')
+plt.savefig('../plots/results/wrong-detector-length/basicNN_charge_20x20x20_loss.pdf')
 
+print("Maximum Validation Accuracy Reached: %.5f%%" % max(history.history['val_acc']))
 
-model_path = '/home/taylor/Documents/independent-research/models/20x20x20/'
+#model_path = '../models/20x20x20/'
 
-# serialize model to YAML
-model_yaml = model.to_yaml()
-with open(model_path + "basicNN_NOISE.yaml", "w") as yaml_file:
-    yaml_file.write(model_yaml)
-# serialize weights to HDF5
-model.save_weights(model_path + "basicNN_NOISE.h5")
-print("Saved model to disk")
+# # serialize model to YAML
+# model_yaml = model.to_yaml()
+# with open(model_path + "basicNN_NOISE.yaml", "w") as yaml_file:
+#     yaml_file.write(model_yaml)
+# # serialize weights to HDF5
+# model.save_weights(model_path + "basicNN_NOISE.h5")
+# print("Saved model to disk")
