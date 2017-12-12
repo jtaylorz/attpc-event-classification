@@ -1,5 +1,5 @@
 """
-Testing a basic neural network on nuclear scattering data.
+Testing a 2 layer neural network on nuclear scattering data.
 """
 from keras.models import Sequential
 from keras.layers import Dense

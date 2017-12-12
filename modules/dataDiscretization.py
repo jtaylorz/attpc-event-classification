@@ -65,7 +65,7 @@ def discretizeCylindrical(xyz, z_disc, radial_disc, angular_disc):
 
             bucket_num += 1
 
-    return discretized_data
+    return discretigenzed_data
 
 
 def discretizeGrid(xyz, x_disc, y_disc, z_disc):

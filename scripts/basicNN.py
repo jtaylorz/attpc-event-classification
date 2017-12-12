@@ -16,13 +16,18 @@ batch_size = 10
 
 ## 8 things to change total per run ##
 #loading and splitting data
-p_data = sp.sparse.load_npz('../data/NO-tilt/wrong-detector-length/20x20x20/pDisc_40000_charge.npz')
-C_data = sp.sparse.load_npz('../data/NO-tilt/wrong-detector-length/20x20x20/CDisc_40000_charge.npz')
+p_data = sp.sparse.load_npz('../data/NO-tilt/20x20x20/pDisc_40000_20x20x20.npz')
+C_data = sp.sparse.load_npz('../data/NO-tilt/20x20x20/CDisc_40000_20x20x20.npz')
+noise_data = sp.sparse.load_npz('../data/NO-tilt/20x20x20/noiseDisc_40000_20x20x20.npz')
+
 p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
+noise_labels = np.ones((noise_data.shape[0],))
 
-full_data = sp.sparse.vstack([p_data, C_data], format='csr')
-full_labels = np.hstack((p_labels, C_labels))
+# full_data = sp.sparse.vstack([p_data, C_data], format='csr')
+# full_labels = np.hstack((p_labels, C_labels))
+full_data = sp.sparse.vstack([p_data, C_data, noise_data], format='csr')
+full_labels = np.hstack((p_labels, C_labels, noise_labels))
 print(full_data.shape)
 print(full_labels.shape)
 
@@ -40,25 +45,25 @@ history = model.fit(full_data.todense(), full_labels, validation_split=validatio
 #evaluate the model
 scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
 
-print(history.history.keys())
-# summarize history for accuracy
-plt.figure(1)
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-plt.title('single layer NN accuracy - charge')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('../plots/results/wrong-detector-length/basicNN_charge_20x20x20_acc.pdf')
-# summarize history for loss
-plt.figure(2)
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('single layer NN loss - charge')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('../plots/results/wrong-detector-length/basicNN_charge_20x20x20_loss.pdf')
+# print(history.history.keys())
+# # summarize history for accuracy
+# plt.figure(1)
+# plt.plot(history.history['acc'])
+# plt.plot(history.history['val_acc'])
+# plt.title('Single Layer NN Accuracy - p vs. C')
+# plt.ylabel('accuracy')
+# plt.xlabel('epoch')
+# plt.legend(['train', 'test'], loc='upper left')
+# plt.savefig('../plots/results/tilt/basicNN_pC_acc.pdf')
+# # summarize history for loss
+# plt.figure(2)
+# plt.plot(history.history['loss'])
+# plt.plot(history.history['val_loss'])
+# plt.title('Single Layer NN Loss - p vs. C')
+# plt.ylabel('loss')
+# plt.xlabel('epoch')
+# plt.legend(['train', 'test'], loc='upper left')
+# plt.savefig('../plots/results/tilt/basicNN_pC_loss.pdf')
 
 print("Maximum Validation Accuracy Reached: %.5f%%" % max(history.history['val_acc']))
 

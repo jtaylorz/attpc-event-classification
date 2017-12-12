@@ -10,7 +10,7 @@ import scipy as sp
 CHARGE = True
 NOISE = True
 
-p_data = dd.bulkDiscretize('../data/tilt/p_40000_tilt.h5', 20, 20, 20, CHARGE, NOISE)
-sp.sparse.save_npz('../data/tilt/20x20x20/pDisc_40000_20x20x20_tilt.npz', p_data)
+p_data = dd.bulkDiscretize('../data/NO-tilt/p_40000.h5', 20, 20, 20, CHARGE, NOISE)
+sp.sparse.save_npz('../data/NO-tilt/20x20x20/pDisc_40000_20x20x20.npz', p_data)
 
 print (p_data.shape)
