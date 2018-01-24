@@ -31,7 +31,7 @@ pgen = uniform_param_generator(beam_enu0, beam_mass, beam_charge, mass_num, max_
 
 sim = EventSimulator(config)
 
-with HDFDataFile('../data/NO-tilt/p_40000_tilt.h5', 'w') as hdf:
+with HDFDataFile('../data/tilt/p_40000_tilt.h5', 'w') as hdf:
     evt_id = 0
     for p in pgen:
         if(evt_id > num_evts):

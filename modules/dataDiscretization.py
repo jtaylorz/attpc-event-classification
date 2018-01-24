@@ -16,8 +16,7 @@ from pytpc.hdfdata import HDFDataFile
 import yaml
 import h5py
 
-# time buckets
-DETECTOR_LENGTH = 1100.0
+DETECTOR_LENGTH = 1250.0
 DETECTOR_RADIUS = 275.0
 
 def discretizeCylindrical(xyz, z_disc, radial_disc, angular_disc):
@@ -139,6 +138,10 @@ def discretizeGridCharge(xyz, x_disc, y_disc, z_disc):
     charges = []
 
     for point in xyz:
+        #check that z-coordinate of point is in appropriate range
+        if (point[2] > DETECTOR_LENGTH):
+            continue
+
         x_bucket = math.floor(((point[0]+DETECTOR_RADIUS)/(2*DETECTOR_RADIUS))*x_disc)
         y_bucket = math.floor(((point[1]+DETECTOR_RADIUS)/(2*DETECTOR_RADIUS))*y_disc)
         z_bucket = math.floor((point[2]/DETECTOR_LENGTH)*z_disc)
