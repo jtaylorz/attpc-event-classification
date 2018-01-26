@@ -49,7 +49,7 @@ for run in runs:
         print("Discretized run_" + run + " Carbon event " + str(evt_id))
 
     C_data = sp.sparse.vstack(C_discEvts, format='csr')
-    sp.sparse.save_npz('../data/real/20x20x20/run_' + run + '_CDisc.npz', p_data)
+    sp.sparse.save_npz('../data/real/20x20x20/run_' + run + '_CDisc.npz', C_data)
 
     #discretize junk events
     junk_indices = labels.loc[(labels['label'] == 'j')]['evt_id'].values
@@ -62,6 +62,6 @@ for run in runs:
         print("Discretized run_" + run + " junk event " + str(evt_id))
 
     junk_data = sp.sparse.vstack(junk_discEvts, format='csr')
-    sp.sparse.save_npz('../data/real/20x20x20/run_' + run + '_junkDisc.npz', p_data)
+    sp.sparse.save_npz('../data/real/20x20x20/run_' + run + '_junkDisc.npz', junk_data)
 
 print("Discretization complete.")
