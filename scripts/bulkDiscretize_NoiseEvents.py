@@ -11,7 +11,7 @@ num_evts = 40000
 #Whether or not we want to sum charge
 CHARGE = True
 
-noise_data = dd.createNoiseEvents(num_evts, 20, 20, 20, CHARGE)
-sp.sparse.save_npz('../data/tilt/20x20x20/noiseDisc_40000_20x20x20.npz', noise_data)
+noise_data = dd.createNoiseEvents(num_evts, 50, 50, 50, CHARGE)
+sp.sparse.save_npz('../data/tilt/50x50x50/noiseDisc_40000_50x50x50.npz', noise_data)
 
 print (noise_data.shape)

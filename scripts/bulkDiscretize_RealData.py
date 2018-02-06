@@ -14,11 +14,12 @@ import pandas as pd
 import pytpc
 
 data_path = '../data/real/'
+disc_path = data_path + '50x50x50/'
 runs = ['0130', '0210']
 
-x_disc = 20
-y_disc = 20
-z_disc = 20
+x_disc = 50
+y_disc = 50
+z_disc = 50
 
 for run in runs:
     data = pytpc.HDFDataFile(data_path + "run_" + run + ".h5", 'r')
@@ -36,7 +37,7 @@ for run in runs:
         print("Discretized run_" + run + " proton event " + str(evt_id))
 
     p_data = sp.sparse.vstack(p_discEvts, format='csr')
-    sp.sparse.save_npz('../data/real/20x20x20/run_' + run + '_pDisc.npz', p_data)
+    sp.sparse.save_npz(disc_path + 'run_' + run + '_pDisc.npz', p_data)
 
     #discretize carbon events
     C_indices = labels.loc[(labels['label'] == 'c')]['evt_id'].values
@@ -49,7 +50,7 @@ for run in runs:
         print("Discretized run_" + run + " Carbon event " + str(evt_id))
 
     C_data = sp.sparse.vstack(C_discEvts, format='csr')
-    sp.sparse.save_npz('../data/real/20x20x20/run_' + run + '_CDisc.npz', C_data)
+    sp.sparse.save_npz(disc_path + 'run_' + run + '_CDisc.npz', C_data)
 
     #discretize junk events
     junk_indices = labels.loc[(labels['label'] == 'j')]['evt_id'].values
@@ -62,6 +63,6 @@ for run in runs:
         print("Discretized run_" + run + " junk event " + str(evt_id))
 
     junk_data = sp.sparse.vstack(junk_discEvts, format='csr')
-    sp.sparse.save_npz('../data/real/20x20x20/run_' + run + '_junkDisc.npz', junk_data)
+    sp.sparse.save_npz(disc_path + 'run_' + run + '_junkDisc.npz', junk_data)
 
 print("Discretization complete.")
