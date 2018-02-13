@@ -14,6 +14,7 @@ networks written using [Keras](https://keras.io/) with a [Tensorflow](https://ww
 * numpy
 * matplotlib
 * scipy
+* pandas
 * scikit-learn
 * keras
 * tensorflow
