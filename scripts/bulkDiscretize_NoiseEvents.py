@@ -1,5 +1,8 @@
 """
-Bulk generation and discretization of h5 simulated noise events.
+bulkDiscretize_NoiseEvents.py
+=============================
+
+Bulk generation and discretization of hdf5 simulated noise events.
 """
 import sys
 sys.path.insert(0, '../modules/')

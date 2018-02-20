@@ -1,4 +1,7 @@
 """
+discTest_z.py
+=============
+
 Discretization script for discretizing with different resolutions in z.
 """
 import sys

@@ -1,4 +1,7 @@
 """
+2layerNN.py
+===========
+
 Testing a 2 layer neural network on nuclear scattering data.
 """
 from keras.models import Sequential

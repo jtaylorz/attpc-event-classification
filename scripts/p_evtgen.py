@@ -1,3 +1,10 @@
+"""
+p_evtgen.py
+===========
+
+Script to generate and store simulated proton events using pytpc's simulation
+module.
+"""
 import math
 import numpy as np
 

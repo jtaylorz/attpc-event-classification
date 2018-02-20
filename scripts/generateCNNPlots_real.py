@@ -1,4 +1,7 @@
 """
+generateCNNPlots_real.py
+========================
+
 Script to generate 128x128 pixel images of real data. These images
 will be the dataset used for a convolutional neural net test to classify protons,
 carbon, and junk.

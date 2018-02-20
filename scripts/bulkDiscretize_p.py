@@ -1,5 +1,8 @@
 """
-Bulk discretization of h5 formatted point cloud data.
+bulkDiscretize_p.py
+===================
+
+Bulk discretization of hdf5 formatted point cloud data.
 """
 import sys
 sys.path.insert(0, '../modules/')

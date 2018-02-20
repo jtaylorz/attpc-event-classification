@@ -1,3 +1,11 @@
+"""
+C_evtgen.py
+===========
+
+Script to generate and store simulated carbon events using pytpc's simulation
+module.
+"""
+
 import math
 import numpy as np
 

@@ -1,4 +1,8 @@
 """
+bulkDiscretize_RealData.py
+==========================
+
+
 Script to discretize labeled events from real AT-TPC h5 datafiles. Labels should
 be stored in .csv files and follow the same labeling scheme as those provided.
 

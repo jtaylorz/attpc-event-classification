@@ -1,6 +1,9 @@
 """
+generateCNNPlots_simjunk.py
+===========================
+
 Script to generate 128x128 pixel images of simulated junk data. These images
-will be the dataset used for a convolutional neural net test to classify protons, 
+will be the dataset used for a convolutional neural net test to classify protons,
 carbon, and junk.
 """
 import matplotlib.pyplot as plt
