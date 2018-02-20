@@ -25,5 +25,8 @@ plots/*
 # req-files directory
 req-files/*
 
+# cnn-plots directory
+cnn-plots/*
+
 # DS_store
 .DS_store
