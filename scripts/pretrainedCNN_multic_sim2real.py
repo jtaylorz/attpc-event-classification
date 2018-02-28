@@ -12,6 +12,7 @@ Inputs are 128x128 pixel plots of events.
 
 Testing proton vs.carbon vs. junk approach - multiclass
 """
+import matplotlib.pyplot as plt
 import numpy as np
 import h5py
 
