@@ -9,7 +9,7 @@ etc. A small top model is then trained on top of the VGG16 network to classify
 our data.
 
 Inputs are 128x128 pixel plots of events.
-Baseline sim proton vs. sim Carbon
+Baseline real proton vs. real Carbon
 """
 import matplotlib.pyplot as plt
 import os
@@ -27,7 +27,7 @@ img_width, img_height = 128, 128
 input_shape = (img_width, img_height, 3)
 
 batch_size = 16
-epochs = 50
+epochs = 100
 validation_split = 0.25
 
 #paths
@@ -96,7 +96,7 @@ def train_top_model():
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train data', 'test data'], loc='upper left')
-    plt.savefig('../plots/results/CNN/CNN_real2real_pC_acc.pdf')
+    #plt.savefig('../plots/results/CNN/CNN_real2real_pC_acc.pdf')
 
 
 if not (os.path.isfile(bottleneck_features_train_path) and os.path.isfile(bottleneck_features_test_path)):

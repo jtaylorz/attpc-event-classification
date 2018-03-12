@@ -11,6 +11,7 @@ our data.
 Inputs are 128x128 pixel plots of events.
 
 Testing proton vs.carbon vs. junk approach - multiclass (only real data)
+Trains the last layer of VGG16 - Long training periods
 """
 import matplotlib.pyplot as plt
 import numpy as np

@@ -11,6 +11,7 @@ our data.
 Inputs are 128x128 pixel plots of events.
 
 Testing proton vs. all (Carbon + junk) approach
+Trains the last layer of VGG16 - Long training periods
 """
 import numpy as np
 import h5py

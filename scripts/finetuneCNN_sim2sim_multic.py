@@ -9,7 +9,7 @@ etc. A small top model is then trained on top of the VGG16 network to classify
 our data.
 
 Inputs are 128x128 pixel plots of events.
-Baseline sim proton vs. sim Carbon
+Baseline sim proton vs. sim Carbon vs. sim junk
 """
 import matplotlib.pyplot as plt
 import os
@@ -19,6 +19,7 @@ import h5py
 from keras import applications
 from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
+from keras.utils import np_utils
 from sklearn.model_selection import train_test_split
 
 seed = 7
@@ -32,23 +33,28 @@ validation_split = 0.25
 
 #paths
 hdf5_path = '../cnn-plots/hdf5s/'
-bottleneck_features_train_path = '../models/bottleneck_features_sim2sim_pC_train.npy'
-bottleneck_features_test_path = '../models/bottleneck_features_sim2sim_pC_test.npy'
-top_model_weights_path = '../models/top_model_trained_sim2sim_pC.h5'
+bottleneck_features_train_path = '../models/bottleneck_features_sim2sim_multic_train.npy'
+bottleneck_features_test_path = '../models/bottleneck_features_sim2sim_multic_test.npy'
+top_model_weights_path = '../models/top_model_trained_sim2sim_multic.h5'
 
 #load images from hdf5 files
 sim_p_file = h5py.File(hdf5_path + 'sim_p.h5', 'r')
 sim_C_file = h5py.File(hdf5_path + 'sim_C.h5', 'r')
+sim_junk_file = h5py.File(hdf5_path + 'sim_junk.h5', 'r')
 
 sim_p = sim_p_file['img']
 sim_C = sim_C_file['img']
+sim_junk = sim_junk_file['img']
 
 #labels
 sim_p_labels = np.zeros((sim_p.shape[0],))
 sim_C_labels = np.ones((sim_C.shape[0],))
+sim_junk_labels = np.full((sim_junk.shape[0],), 2)
 
-sim_X = np.vstack((np.array(sim_p), np.array(sim_C)))
-sim_labels = np.hstack((sim_p_labels, sim_C_labels))
+sim_X = np.vstack((np.array(sim_p), np.array(sim_C), np.array(sim_junk)))
+sim_labels_categorical = np.hstack((sim_p_labels, sim_C_labels, sim_junk_labels))
+#one-hot encode for use with categorical_crossentropy
+sim_labels = np_utils.to_categorical(sim_labels_categorical)
 
 X_train, X_test, labels_train, labels_test = train_test_split(sim_X, sim_labels, test_size=0.25, random_state=42)
 
@@ -62,7 +68,7 @@ def save_bottleneck_features():
     np.save(open(bottleneck_features_train_path, 'wb'), bottleneck_features_train)
 
     print("Calculating pre-trained weights for test set...")
-    bottleneck_features_test  = model.predict(X_test)
+    bottleneck_features_test = model.predict(X_test)
     np.save(open(bottleneck_features_test_path, 'wb'), bottleneck_features_test)
 
 
@@ -74,10 +80,10 @@ def train_top_model():
     model.add(Flatten(input_shape=train_data.shape[1:]))
     model.add(Dense(256, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(1, activation='sigmoid'))
+    model.add(Dense(sim_labels.shape[1], activation='softmax'))
 
-    model.compile(loss='binary_crossentropy',
-                  optimizer='rmsprop',
+    model.compile(loss='categorical_crossentropy',
+                  optimizer='adam',
                   metrics=['accuracy'])
 
     print("Training top model on training data")
@@ -92,11 +98,11 @@ def train_top_model():
     plt.figure(1)
     plt.plot(history.history['acc'])
     plt.plot(history.history['val_acc'])
-    plt.title('CNN Accuracy Simulated Data - p vs. C')
+    plt.title('CNN Accuracy Simulated Data - Multiclass')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train data', 'test data'], loc='upper left')
-    #plt.savefig('../plots/results/CNN/CNN_sim2sim_pC_acc.pdf')
+    plt.savefig('../plots/results/CNN/CNN_sim2sim_multic_acc.pdf')
 
 
 if not (os.path.isfile(bottleneck_features_train_path) and os.path.isfile(bottleneck_features_test_path)):
