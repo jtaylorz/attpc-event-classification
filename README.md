@@ -24,4 +24,5 @@ networks written using [Keras](https://keras.io/) with a [Tensorflow](https://ww
 * Logistic Regression
 * Single-Layer Densely-Connected Neural Network
 * Two Layer Densely-Connected Neural Network
+* Pre-Trained Convolutional Neural Network (Image Recognition Problem)
 * Support Vector Machines (One Class Classification)
