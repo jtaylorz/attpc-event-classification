@@ -5,7 +5,6 @@ C_evtgen.py
 Script to generate and store simulated carbon events using pytpc's simulation
 module.
 """
-
 import math
 import numpy as np
 
@@ -19,6 +18,8 @@ import pytpc
 import yaml
 import h5py
 
+POINT_CUTOFF = 30
+
 with open('../req-files/config_e15503b_C.yml', 'r') as f:
     config = yaml.load(f)
 
@@ -31,15 +32,15 @@ beam_origin_z = config['beam_origin_z']
 
 gas = pytpc.gases.InterpolatedGas('isobutane', 19.2)
 
-# number of events to create
+#number of events to create
 num_evts = 40000
 
-#adding 1000 event cusion for possibility of failed event sim
+#doubling events generated to cushion for possibility of failed event sim and small events
 Cgen = uniform_param_generator(beam_enu0, beam_mass, beam_charge, mass_num, max_beam_angle, beam_origin_z, gas, num_evts+1000)
 
 sim = EventSimulator(config)
 
-with HDFDataFile('../data/tilt/C_40000_tilt.h5', 'w') as hdf:
+with HDFDataFile('../data/tilt/C_40000_tilt_largeEvts.h5', 'w') as hdf:
     evt_id = 0
     for C in Cgen:
         if(evt_id > num_evts):
@@ -53,8 +54,13 @@ with HDFDataFile('../data/tilt/C_40000_tilt.h5', 'w') as hdf:
 
         pyevt = sim.convert_event(evt, evt_id)
 
-        hdf.write_get_event(pyevt)
-        print("Wrote event " + str(evt_id) + " with " + str(len(pyevt.traces)) + " traces")
-        evt_id += 1
+        cur_ptcount = pyevt.xyzs(peaks_only=True, drift_vel=5.2, clock=12.5, return_pads=False, baseline_correction=False, cg_times=False).shape[0]
+        if(cur_ptcount < POINT_CUTOFF):
+            print("Event with low point count, skipping")
+            continue;
+        else:
+            hdf.write_get_event(pyevt)
+            print("Wrote event " + str(evt_id) + " with " + str(len(pyevt.traces)) + " traces")
+            evt_id += 1
 
 print(str(evt_id-1) + " events written to file")
