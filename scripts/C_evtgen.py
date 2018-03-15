@@ -36,7 +36,7 @@ gas = pytpc.gases.InterpolatedGas('isobutane', 19.2)
 num_evts = 40000
 
 #doubling events generated to cushion for possibility of failed event sim and small events
-Cgen = uniform_param_generator(beam_enu0, beam_mass, beam_charge, mass_num, max_beam_angle, beam_origin_z, gas, num_evts+1000)
+Cgen = uniform_param_generator(beam_enu0, beam_mass, beam_charge, mass_num, max_beam_angle, beam_origin_z, gas, num_evts*2)
 
 sim = EventSimulator(config)
 
