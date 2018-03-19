@@ -19,7 +19,7 @@ data_path = '../data/tilt/'
 plot_path = '../cnn-plots/'
 
 # #proton events
-# with pytpc.HDFDataFile(data_path + 'p_40000_tilt.h5', 'r') as p_sim:
+# with pytpc.HDFDataFile(data_path + 'p_40000_tilt_largeEvts.h5', 'r') as p_sim:
 #     n_evts = len(p_sim)
 #     evt_id = 0
 #
@@ -33,14 +33,15 @@ plot_path = '../cnn-plots/'
 #         plt.xlim(0.0, 1250.0)
 #         plt.ylim((-275.0, 275.0))
 #         plt.axis('off')
-#         plt.savefig(plot_path + 'sim_p/psim_evt_' + '{0:05d}'.format(evt_id) + '.png')
+#         plt.savefig(plot_path + 'sim_p_largeEvts/psim_evt_' + '{0:05d}'.format(evt_id) + '.png')
 #         plt.close()
 #
 #         print("Plotted/saved simulated proton event " + str(evt_id))
 #         evt_id += 1
 
+
 #carbon events
-with pytpc.HDFDataFile(data_path + 'C_40000_tilt.h5', 'r') as C_sim:
+with pytpc.HDFDataFile(data_path + 'C_40000_tilt_largeEvts.h5', 'r') as C_sim:
     n_evts = len(C_sim)
     evt_id = 0
 
@@ -54,27 +55,8 @@ with pytpc.HDFDataFile(data_path + 'C_40000_tilt.h5', 'r') as C_sim:
         plt.xlim(0.0, 1250.0)
         plt.ylim((-275.0, 275.0))
         plt.axis('off')
-        plt.savefig(plot_path + 'sim_C/Csim_evt_' + '{0:05d}'.format(evt_id) + '.png')
+        plt.savefig(plot_path + 'sim_C_largeEvts/Csim_evt_' + '{0:05d}'.format(evt_id) + '.png')
         plt.close()
 
         print("Plotted/saved simulated carbon event " + str(evt_id))
         evt_id += 1
-
-# #junk events
-# n_junk_evts = 40000
-# evt_id = 0
-#
-# while (evt_id < n_junk_evts):
-#     empty_evt = np.empty([1,4])
-#     noise_evt = dd.addNoise(empty_evt)
-#
-#     plt.figure(figsize=(1.28, 1.28), dpi=100)
-#     plt.plot(noise_evt[:,2], noise_evt[:,1],'.', markersize=2.0, c='black')
-#     plt.xlim(0.0, 1250.0)
-#     plt.ylim((-275.0, 275.0))
-#     plt.axis('off')
-#     plt.savefig(plot_path + 'sim_junk/junksim_evt_' + '{0:05d}'.format(evt_id) + '.png')
-#     plt.close()
-#
-#     print("Plotted/saved simulated noise event " + str(evt_id))
-#     evt_id += 1

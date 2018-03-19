@@ -1,8 +1,9 @@
 """
-basicNN_real_pC.py
-==================
+basicNN_sim2real_pC.py
+======================
 
 Testing a basic neural network on nuclear scattering data.
+Trains on simulated data and tests on real
 """
 import matplotlib.pyplot as plt
 from keras.models import Sequential

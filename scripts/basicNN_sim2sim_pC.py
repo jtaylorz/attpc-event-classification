@@ -1,8 +1,9 @@
 """
-basicNN_sim_pCnoise.py
-======================
+basicNN_sim2sim_pC.py
+=====================
 
 Testing a basic neural network on nuclear scattering data.
+Trains on simulated tests on simulated.
 """
 import matplotlib.pyplot as plt
 from keras.models import Sequential
@@ -21,16 +22,12 @@ batch_size = 10
 #loading and splitting data
 p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_noise_40000_20x20x20_tilt.npz')
 C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_noise_40000_20x20x20_tilt.npz')
-noise_data = sp.sparse.load_npz('../data/tilt/20x20x20/noiseDisc_40000_20x20x20.npz')
 
 p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
-noise_labels = np.ones((noise_data.shape[0],))
 
-# full_data = sp.sparse.vstack([p_data, C_data], format='csr')
-# full_labels = np.hstack((p_labels, C_labels))
-full_data = sp.sparse.vstack([p_data, C_data, noise_data], format='csr')
-full_labels = np.hstack((p_labels, C_labels, noise_labels))
+full_data = sp.sparse.vstack([p_data, C_data], format='csr')
+full_labels = np.hstack((p_labels, C_labels))
 print(full_data.shape)
 print(full_labels.shape)
 
@@ -53,20 +50,20 @@ print(history.history.keys())
 plt.figure(1)
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
-plt.title('Single Layer NN Accuracy - p vs. C + junk')
+plt.title('Single Layer NN Accuracy - Simulated p vs. Simulated C')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('../plots/results/tilt/basicNN_sim_pCjunk_acc.pdf')
-# summarize history for loss
-plt.figure(2)
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Single Layer NN Loss - p vs. C + junk')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('../plots/results/tilt/basicNN_sim_pCjunk_loss.pdf')
+plt.savefig('../plots/results/tilt/basicNN_pC_acc.pdf')
+# # summarize history for loss
+# plt.figure(2)
+# plt.plot(history.history['loss'])
+# plt.plot(history.history['val_loss'])
+# plt.title('Single Layer NN Loss - p vs. C')
+# plt.ylabel('loss')
+# plt.xlabel('epoch')
+# plt.legend(['train', 'test'], loc='upper left')
+# plt.savefig('../plots/results/tilt/basicNN_pC_loss.pdf')
 
 print("Maximum Validation Accuracy Reached: %.5f%%" % max(history.history['val_acc']))
 

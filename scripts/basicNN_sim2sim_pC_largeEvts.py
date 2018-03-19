@@ -1,8 +1,9 @@
 """
-basicNN_sim_pC.py
-=================
+basicNN_sim2sim_pC_largeEvts.py
+===============================
 
 Testing a basic neural network on nuclear scattering data.
+Trains on simulated tests on simulated. Uses simulated events with > 30 points
 """
 import matplotlib.pyplot as plt
 from keras.models import Sequential
@@ -19,8 +20,8 @@ batch_size = 10
 
 ## 8 things to change total per run ##
 #loading and splitting data
-p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_noise_40000_20x20x20_tilt.npz')
-C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_noise_40000_20x20x20_tilt.npz')
+p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_40000_20x20x20_tilt_largeEvts.npz')
+C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_40000_20x20x20_tilt_largeEvts.npz')
 
 p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
@@ -46,16 +47,16 @@ history = model.fit(full_data.todense(), full_labels, validation_split=validatio
 #evaluate the model
 scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
 
-# print(history.history.keys())
-# # summarize history for accuracy
-# plt.figure(1)
-# plt.plot(history.history['acc'])
-# plt.plot(history.history['val_acc'])
-# plt.title('Single Layer NN Accuracy - p vs. C')
-# plt.ylabel('accuracy')
-# plt.xlabel('epoch')
-# plt.legend(['train', 'test'], loc='upper left')
-# plt.savefig('../plots/results/tilt/basicNN_pC_acc.pdf')
+print(history.history.keys())
+# summarize history for accuracy
+plt.figure(1)
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Single Layer NN Accuracy - Simulated p vs. Simulated C (> 30 points)')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('../plots/results/tilt/basicNN_pC_largeEvts_acc.pdf')
 # # summarize history for loss
 # plt.figure(2)
 # plt.plot(history.history['loss'])
