@@ -1,6 +1,6 @@
 """
-finetuneCNN_sim2sim_multic.py
-=============================
+finetuneCNN_sim2sim_multic_largeEvts.py
+=======================================
 
 Testing pretrained/finetunable convolutional neural network solution to event classification
 problem. Model uses a VGG16 architecture pretrained on the ImageNet database to
@@ -10,6 +10,7 @@ our data.
 
 Inputs are 128x128 pixel plots of events.
 Baseline sim proton vs. sim Carbon vs. sim junk
+Uses simulated events with > 30 points.
 """
 import matplotlib.pyplot as plt
 import os
@@ -33,13 +34,13 @@ validation_split = 0.25
 
 #paths
 hdf5_path = '../cnn-plots/hdf5s/'
-bottleneck_features_train_path = '../models/bottleneck_features_sim2sim_multic_train.npy'
-bottleneck_features_test_path = '../models/bottleneck_features_sim2sim_multic_test.npy'
-top_model_weights_path = '../models/top_model_trained_sim2sim_multic.h5'
+bottleneck_features_train_path = '../models/bottleneck_features_sim2sim_multic_largeEvts_train.npy'
+bottleneck_features_test_path = '../models/bottleneck_features_sim2sim_multic_largeEvts_test.npy'
+top_model_weights_path = '../models/top_model_trained_sim2sim_multic_largeEvts.h5'
 
 #load images from hdf5 files
-sim_p_file = h5py.File(hdf5_path + 'sim_p.h5', 'r')
-sim_C_file = h5py.File(hdf5_path + 'sim_C.h5', 'r')
+sim_p_file = h5py.File(hdf5_path + 'sim_p_largeEvts.h5', 'r')
+sim_C_file = h5py.File(hdf5_path + 'sim_C_largeEvts.h5', 'r')
 sim_junk_file = h5py.File(hdf5_path + 'sim_junk.h5', 'r')
 
 sim_p = sim_p_file['img']
@@ -98,11 +99,11 @@ def train_top_model():
     plt.figure(1)
     plt.plot(history.history['acc'])
     plt.plot(history.history['val_acc'])
-    plt.title('CNN Accuracy Simulated Data - Multiclass')
+    plt.title('CNN Accuracy Simulated Data - Multiclass (> 30 points)')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train data', 'test data'], loc='upper left')
-    plt.savefig('../plots/results/CNN/CNN_sim2sim_multic_acc.pdf')
+    plt.savefig('../plots/results/CNN/CNN_sim2sim_multic_largeEvts_acc.pdf')
 
 
 if not (os.path.isfile(bottleneck_features_train_path) and os.path.isfile(bottleneck_features_test_path)):

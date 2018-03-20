@@ -3,7 +3,8 @@ basicNN_sim2sim_pC_largeEvts.py
 ===============================
 
 Testing a basic neural network on nuclear scattering data.
-Trains on simulated tests on simulated. Uses simulated events with > 30 points
+Trains on simulated tests on simulated.
+Uses simulated events with > 30 points.
 """
 import matplotlib.pyplot as plt
 from keras.models import Sequential
