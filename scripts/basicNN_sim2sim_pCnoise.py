@@ -20,8 +20,8 @@ batch_size = 10
 
 ## 8 things to change total per run ##
 #loading and splitting data
-p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_noise_40000_20x20x20_tilt.npz')
-C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_noise_40000_20x20x20_tilt.npz')
+p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_40000_20x20x20_tilt_largeEvts.npz')
+C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_40000_20x20x20_tilt_largeEvts.npz')
 noise_data = sp.sparse.load_npz('../data/tilt/20x20x20/noiseDisc_40000_20x20x20.npz')
 
 p_labels = np.zeros((p_data.shape[0],))
@@ -58,16 +58,19 @@ plt.title('Single Layer NN Accuracy - p vs. C + junk')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('../plots/results/tilt/basicNN_sim_pCjunk_acc.pdf')
-# summarize history for loss
-plt.figure(2)
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Single Layer NN Loss - p vs. C + junk')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('../plots/results/tilt/basicNN_sim_pCjunk_loss.pdf')
+# plt.savefig('../plots/results/tilt/basicNN_sim_pCjunk_acc.pdf')
+# # summarize history for loss
+# plt.figure(2)
+# plt.plot(history.history['loss'])
+# plt.plot(history.history['val_loss'])
+# plt.title('Single Layer NN Loss - p vs. C + junk')
+# plt.ylabel('loss')
+# plt.xlabel('epoch')
+# plt.legend(['train', 'test'], loc='upper left')
+# plt.savefig('../plots/results/tilt/basicNN_sim_pCjunk_loss.pdf')
+
+print(history.history['acc'])
+print(history.history['val_acc'])
 
 print("Maximum Validation Accuracy Reached: %.5f%%" % max(history.history['val_acc']))
 

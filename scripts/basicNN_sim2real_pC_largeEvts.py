@@ -74,7 +74,7 @@ plt.title('Single Layer NN Accuracy - p vs. C - (> 30 points)')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['simulated training data', 'real test data'], loc='upper left')
-plt.savefig('../plots/results/real/basicNN_sim2real_pC_largeEvts_acc.pdf')
+#plt.savefig('../plots/results/real/basicNN_sim2real_pC_largeEvts_acc.pdf')
 # # summarize history for loss
 # plt.figure(2)
 # plt.plot(history.history['loss'])
@@ -84,6 +84,9 @@ plt.savefig('../plots/results/real/basicNN_sim2real_pC_largeEvts_acc.pdf')
 # plt.xlabel('epoch')
 # plt.legend(['train', 'test'], loc='upper left')
 # plt.savefig('../plots/results/tilt/basicNN_pC_loss.pdf')
+
+print(history.history['acc'])
+print(history.history['val_acc'])
 
 print("Maximum Validation Accuracy Reached: %.5f%%" % max(history.history['val_acc']))
 
