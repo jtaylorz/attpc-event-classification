@@ -103,8 +103,10 @@ def train_top_model():
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train data', 'test data'], loc='upper left')
-    plt.savefig('../plots/results/CNN/CNN_sim2sim_multic_largeEvts_acc.pdf')
+    #plt.savefig('../plots/results/CNN/CNN_sim2sim_multic_largeEvts_acc.pdf')
 
+    print(history.history['acc'])
+    print(history.history['val_acc'])
 
 if not (os.path.isfile(bottleneck_features_train_path) and os.path.isfile(bottleneck_features_test_path)):
     save_bottleneck_features()

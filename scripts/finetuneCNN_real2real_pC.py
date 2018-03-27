@@ -98,6 +98,8 @@ def train_top_model():
     plt.legend(['train data', 'test data'], loc='upper left')
     #plt.savefig('../plots/results/CNN/CNN_real2real_pC_acc.pdf')
 
+    print(history.history['acc'])
+    print(history.history['val_acc'])
 
 if not (os.path.isfile(bottleneck_features_train_path) and os.path.isfile(bottleneck_features_test_path)):
     save_bottleneck_features()
