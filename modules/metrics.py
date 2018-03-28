@@ -34,7 +34,7 @@ import numpy as np
 from keras.callbacks import Callback
 from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 
-class Metrics(Callback):
+class BinaryMetrics(Callback):
     def on_train_begin(self, logs={}):
         self.val_cms = []
 
@@ -43,10 +43,24 @@ class Metrics(Callback):
         val_targ = self.validation_data[1]
         _val_cm = confusion_matrix(val_targ, val_predict)
         self.val_cms.append(_val_cm)
+        #print('\n')
         #print(_val_cm)
         return
 
-class MetricsTwo(Callback):
+class MulticlassMetrics(Callback):
+    def on_train_begin(self, logs={}):
+        self.val_cms = []
+
+    def on_epoch_end(self, epoch, logs={}):
+        val_predict = (np.asarray(self.model.predict(self.validation_data[0]))).round()
+        val_targ = self.validation_data[1]
+        _val_cm = confusion_matrix(val_targ.argmax(axis=1), val_predict.argmax(axis=1))
+        self.val_cms.append(_val_cm)
+        # print('\n')
+        # print(_val_cm)
+        return
+
+class MetricsOther(Callback):
     def on_train_begin(self, logs={}):
         self.val_f1s = []
         self.val_recalls = []

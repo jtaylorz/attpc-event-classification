@@ -21,6 +21,11 @@ from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 from sklearn.model_selection import train_test_split
 
+import sys
+sys.path.insert(0, '../modules/')
+import metrics
+metrics = metrics.BinaryMetrics()
+
 seed = 7
 np.random.seed(seed)
 img_width, img_height = 128, 128
@@ -85,7 +90,8 @@ def train_top_model():
                         validation_data = (test_data, labels_test),
                         shuffle='batch',
                         batch_size=batch_size,
-                        epochs=epochs)
+                        epochs=epochs,
+                        callbacks=[metrics])
 
     print(history.history.keys())
     # summarize history for accuracy
@@ -100,6 +106,18 @@ def train_top_model():
 
     print(history.history['acc'])
     print(history.history['val_acc'])
+
+    textfile = open('../keras-results/CNN/real2real/pC.txt', 'w')
+    textfile.write('acc \n')
+    textfile.write(str(history.history['acc']))
+    textfile.write('\n')
+    textfile.write('\n val_acc \n')
+    textfile.write(str(history.history['val_acc']))
+    textfile.write('\n')
+    textfile.write('\n confusion matrices \n')
+    for cm in metrics.val_cms:
+        textfile.write(str(cm))
+        textfile.write('\n')
 
 if not (os.path.isfile(bottleneck_features_train_path) and os.path.isfile(bottleneck_features_test_path)):
     save_bottleneck_features()

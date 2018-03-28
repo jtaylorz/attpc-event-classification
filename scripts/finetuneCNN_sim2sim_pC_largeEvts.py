@@ -25,7 +25,7 @@ from sklearn.model_selection import train_test_split
 import sys
 sys.path.insert(0, '../modules/')
 import metrics
-metrics = metrics.Metrics()
+metrics = metrics.BinaryMetrics()
 
 seed = 7
 np.random.seed(seed)

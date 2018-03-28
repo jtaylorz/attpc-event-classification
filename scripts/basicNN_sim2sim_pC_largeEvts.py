@@ -13,6 +13,11 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import scipy as sp
 
+import sys
+sys.path.insert(0, '../modules/')
+import metrics
+metrics = metrics.BinaryMetrics()
+
 #fix random seed
 np.random.seed(7)
 epochs = 100
@@ -43,7 +48,11 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 #fit the model with a validation set split
-history = model.fit(full_data.todense(), full_labels, validation_split=validation_split, epochs=epochs, batch_size=batch_size)
+history = model.fit(full_data.todense(), full_labels,
+                    validation_split=validation_split,
+                    epochs=epochs,
+                    batch_size=batch_size,
+                    callbacks=[metrics])
 
 #evaluate the model
 scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
@@ -68,8 +77,17 @@ plt.legend(['train', 'test'], loc='upper left')
 # plt.legend(['train', 'test'], loc='upper left')
 # plt.savefig('../plots/results/tilt/basicNN_pC_loss.pdf')
 
-print(history.history['acc'])
-print(history.history['val_acc'])
+textfile = open('../keras-results/NN/sim2sim/pC.txt', 'w')
+textfile.write('acc \n')
+textfile.write(str(history.history['acc']))
+textfile.write('\n')
+textfile.write('\n val_acc \n')
+textfile.write(str(history.history['val_acc']))
+textfile.write('\n')
+textfile.write('\n confusion matrices \n')
+for cm in metrics.val_cms:
+    textfile.write(str(cm))
+    textfile.write('\n')
 
 print("Maximum Validation Accuracy Reached: %.5f%%" % max(history.history['val_acc']))
 
