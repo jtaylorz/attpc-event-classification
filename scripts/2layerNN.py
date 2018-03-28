@@ -25,7 +25,7 @@ full_labels = np.hstack((p_labels, C_labels))
 print(full_data.shape)
 print(full_labels.shape)
 
-#X_train, X_test, y_train, y_test = train_test_split(full_data, full_labels, test_size=0.25, random_state=0)
+X_train, X_test, labels_train, labels_test = train_test_split(full_data, full_labels, test_size=validation_split, random_state=42)
 
 #define model
 model = Sequential()
@@ -36,11 +36,13 @@ model.add(Dense(1, activation='sigmoid'))
 #compile the model
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-#fit the model with a validation set split
-model.fit(full_data.todense(), full_labels, validation_split=0.25, epochs=50, batch_size=10)
+model.fit(X_train.todense(), labels_train,
+          validation_data=(X_test.todense(), labels_test),
+          epochs=50,
+          batch_size=10)
 
 #evaluate the model
-scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
+scores = model.evaluate(X_test.todense(), labels_test, verbose=0)
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 

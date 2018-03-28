@@ -35,6 +35,8 @@ full_labels = np.hstack((p_labels, C_labels, noise_labels))
 print(full_data.shape)
 print(full_labels.shape)
 
+X_train, X_test, labels_train, labels_test = train_test_split(full_data, full_labels, test_size=validation_split, random_state=42)
+
 #define model
 model = Sequential()
 model.add(Dense(128, input_dim=full_data.shape[1], activation='relu'))
@@ -44,7 +46,10 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 #fit the model with a validation set split
-history = model.fit(full_data.todense(), full_labels, validation_split=validation_split, epochs=epochs, batch_size=batch_size)
+history = model.fit(X_train.todense(), labels_train,
+                    validation_data=(X_test.todense(), labels_test),
+                    epochs=epochs,
+                    batch_size=batch_size)
 
 #evaluate the model
 scores = model.evaluate(full_data.todense(), full_labels, verbose=0)

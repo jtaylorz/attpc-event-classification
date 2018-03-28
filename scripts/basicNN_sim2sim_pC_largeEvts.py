@@ -20,7 +20,7 @@ metrics = metrics.BinaryMetrics()
 
 #fix random seed
 np.random.seed(7)
-epochs = 100
+epochs = 50
 validation_split = 0.25
 batch_size = 10
 
@@ -32,12 +32,12 @@ C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_40000_20x20x20_tilt_lar
 p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
 
-# full_data = sp.sparse.vstack([p_data, C_data], format='csr')
-# full_labels = np.hstack((p_labels, C_labels))
 full_data = sp.sparse.vstack([p_data, C_data], format='csr')
 full_labels = np.hstack((p_labels, C_labels))
 print(full_data.shape)
 print(full_labels.shape)
+
+X_train, X_test, labels_train, labels_test = train_test_split(full_data, full_labels, test_size=validation_split, random_state=42)
 
 #define model
 model = Sequential()
@@ -48,16 +48,14 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 #fit the model with a validation set split
-history = model.fit(full_data.todense(), full_labels,
-                    validation_split=validation_split,
+history = model.fit(X_train.todense(), labels_train,
+                    validation_data=(X_test.todense(), labels_test),
                     epochs=epochs,
                     batch_size=batch_size,
                     callbacks=[metrics])
 
-#evaluate the model
-scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
-
 print(history.history.keys())
+
 # summarize history for accuracy
 plt.figure(1)
 plt.plot(history.history['acc'])

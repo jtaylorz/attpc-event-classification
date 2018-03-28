@@ -62,7 +62,10 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 
 #fit the model with a validation set split
 #history = model.fit(full_data.todense(), full_labels, validation_split=validation_split, epochs=epochs, batch_size=batch_size)
-history = model.fit(pC_sim_train.todense(), pC_sim_labels_train, validation_data=(pC_real.todense(), pC_real_labels), epochs=epochs, batch_size=batch_size)
+history = model.fit(pC_sim_train.todense(), pC_sim_labels_train,
+                    validation_data=(pC_real.todense(), pC_real_labels),
+                    epochs=epochs,
+                    batch_size=batch_size)
 
 print(history.history.keys())
 # summarize history for accuracy
