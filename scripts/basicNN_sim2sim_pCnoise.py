@@ -3,6 +3,7 @@ basicNN_sim2sim_pCnoise.py
 ==========================
 
 Testing a basic neural network on nuclear scattering data.
+Binary classification of protons and "everything else" (carbon and noise)
 Trains on simulated tests on simulated.
 """
 import matplotlib.pyplot as plt
@@ -12,13 +13,17 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import scipy as sp
 
+import sys
+sys.path.insert(0, '../modules/')
+import metrics
+metrics = metrics.BinaryMetrics()
+
 #fix random seed
 np.random.seed(7)
 epochs = 100
 validation_split = 0.25
 batch_size = 10
 
-## 8 things to change total per run ##
 #loading and splitting data
 p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_40000_20x20x20_tilt_largeEvts.npz')
 C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_40000_20x20x20_tilt_largeEvts.npz')
@@ -28,8 +33,6 @@ p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
 noise_labels = np.ones((noise_data.shape[0],))
 
-# full_data = sp.sparse.vstack([p_data, C_data], format='csr')
-# full_labels = np.hstack((p_labels, C_labels))
 full_data = sp.sparse.vstack([p_data, C_data, noise_data], format='csr')
 full_labels = np.hstack((p_labels, C_labels, noise_labels))
 print(full_data.shape)
@@ -49,10 +52,8 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 history = model.fit(X_train.todense(), labels_train,
                     validation_data=(X_test.todense(), labels_test),
                     epochs=epochs,
-                    batch_size=batch_size)
-
-#evaluate the model
-scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
+                    batch_size=batch_size,
+                    callbacks=[metrics])
 
 print(history.history.keys())
 # summarize history for accuracy
@@ -74,8 +75,17 @@ plt.legend(['train', 'test'], loc='upper left')
 # plt.legend(['train', 'test'], loc='upper left')
 # plt.savefig('../plots/results/tilt/basicNN_sim_pCjunk_loss.pdf')
 
-print(history.history['acc'])
-print(history.history['val_acc'])
+textfile = open('../keras-results/NN/sim2sim/pCnoise.txt', 'w')
+textfile.write('acc \n')
+textfile.write(str(history.history['acc']))
+textfile.write('\n')
+textfile.write('\nval_acc \n')
+textfile.write(str(history.history['val_acc']))
+textfile.write('\n')
+textfile.write('\nconfusion matrices \n')
+for cm in metrics.val_cms:
+    textfile.write(str(cm))
+    textfile.write('\n')
 
 print("Maximum Validation Accuracy Reached: %.5f%%" % max(history.history['val_acc']))
 

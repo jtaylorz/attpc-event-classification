@@ -61,7 +61,7 @@ real_labels_categorical = np.hstack((real_p_labels, real_C_labels, real_junk_lab
 #one-hot encode for use with categorical_crossentropy
 real_labels = np_utils.to_categorical(real_labels_categorical)
 
-X_train, X_test, labels_train, labels_test = train_test_split(real_X, real_labels, test_size=0.25, random_state=42)
+X_train, X_test, labels_train, labels_test = train_test_split(real_X, real_labels, test_size=validation_split, random_state=42)
 
 def save_bottleneck_features():
 
@@ -110,14 +110,14 @@ def train_top_model():
     plt.legend(['train data', 'test data'], loc='upper left')
     #plt.savefig('../plots/results/CNN/CNN_real2real_multic_acc_binarycross.pdf')
 
-    textfile = open('../keras-results/CNN/sim2sim/multic.txt', 'w')
+    textfile = open('../keras-results/CNN/real2real/multic.txt', 'w')
     textfile.write('acc \n')
     textfile.write(str(history.history['acc']))
     textfile.write('\n')
-    textfile.write('\n val_acc \n')
+    textfile.write('\nval_acc \n')
     textfile.write(str(history.history['val_acc']))
     textfile.write('\n')
-    textfile.write('\n confusion matrices \n')
+    textfile.write('\nconfusion matrices \n')
     for cm in metrics.val_cms:
         textfile.write(str(cm))
         textfile.write('\n')

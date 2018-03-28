@@ -4,6 +4,7 @@ basicNN_sim2sim_pC.py
 
 Testing a basic neural network on nuclear scattering data.
 Trains on simulated tests on simulated.
+Uses simulated events with > 30 points.
 """
 import matplotlib.pyplot as plt
 from keras.models import Sequential
@@ -12,16 +13,21 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import scipy as sp
 
+import sys
+sys.path.insert(0, '../modules/')
+import metrics
+metrics = metrics.BinaryMetrics()
+
 #fix random seed
 np.random.seed(7)
-epochs = 100
+epochs = 50
 validation_split = 0.25
 batch_size = 10
 
 ## 8 things to change total per run ##
 #loading and splitting data
-p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_noise_40000_20x20x20_tilt.npz')
-C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_noise_40000_20x20x20_tilt.npz')
+p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_40000_20x20x20_tilt_largeEvts.npz')
+C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_40000_20x20x20_tilt_largeEvts.npz')
 
 p_labels = np.zeros((p_data.shape[0],))
 C_labels = np.ones((C_data.shape[0],))
@@ -41,24 +47,24 @@ model.add(Dense(1, activation='sigmoid'))
 #compile the model
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
+#fit the model with a validation set split
 history = model.fit(X_train.todense(), labels_train,
-                    validation_data=(X_test, labels_test),
+                    validation_data=(X_test.todense(), labels_test),
                     epochs=epochs,
-                    batch_size=batch_size)
-
-#evaluate the model
-scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
+                    batch_size=batch_size,
+                    callbacks=[metrics])
 
 print(history.history.keys())
+
 # summarize history for accuracy
 plt.figure(1)
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
-plt.title('Single Layer NN Accuracy - Simulated p vs. Simulated C')
+plt.title('Single Layer NN Accuracy - Simulated p vs. Simulated C (> 30 points)')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('../plots/results/tilt/basicNN_pC_acc.pdf')
+#plt.savefig('../plots/results/tilt/basicNN_pC_largeEvts_acc.pdf')
 # # summarize history for loss
 # plt.figure(2)
 # plt.plot(history.history['loss'])
@@ -68,6 +74,18 @@ plt.savefig('../plots/results/tilt/basicNN_pC_acc.pdf')
 # plt.xlabel('epoch')
 # plt.legend(['train', 'test'], loc='upper left')
 # plt.savefig('../plots/results/tilt/basicNN_pC_loss.pdf')
+
+textfile = open('../keras-results/NN/sim2sim/pC.txt', 'w')
+textfile.write('acc \n')
+textfile.write(str(history.history['acc']))
+textfile.write('\n')
+textfile.write('\nval_acc \n')
+textfile.write(str(history.history['val_acc']))
+textfile.write('\n')
+textfile.write('\nconfusion matrices \n')
+for cm in metrics.val_cms:
+    textfile.write(str(cm))
+    textfile.write('\n')
 
 print("Maximum Validation Accuracy Reached: %.5f%%" % max(history.history['val_acc']))
 

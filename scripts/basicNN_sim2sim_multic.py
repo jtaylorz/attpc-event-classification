@@ -19,6 +19,11 @@ epochs = 100
 validation_split = 0.25
 batch_size = 10
 
+import sys
+sys.path.insert(0, '../modules/')
+import metrics
+metrics = metrics.MulticlassMetrics()
+
 ## 8 things to change total per run ##
 #loading and splitting data
 p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_40000_20x20x20_tilt_largeEvts.npz')
@@ -41,7 +46,6 @@ print(full_labels.shape)
 
 X_train, X_test, labels_train, labels_test = train_test_split(full_data, full_labels, test_size=validation_split, random_state=42)
 
-
 #define model
 model = Sequential()
 model.add(Dense(128, input_dim=full_data.shape[1], activation='relu'))
@@ -54,10 +58,9 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 history = model.fit(X_train.todense(), labels_train,
                     validation_data=(X_test.todense(), labels_test),
                     epochs=epochs,
-                    batch_size=batch_size)
+                    batch_size=batch_size,
+                    callbacks=[metrics])
 
-#evaluate the model
-scores = model.evaluate(full_data.todense(), full_labels, verbose=0)
 
 print(history.history.keys())
 # summarize history for accuracy
@@ -74,13 +77,22 @@ plt.legend(['train', 'test'], loc='upper left')
 # plt.plot(history.history['loss'])
 # plt.plot(history.history['val_loss'])
 # plt.title('Single Layer NN Loss - p vs. C + junk')
-# plt.ylabel('loss')
+# plt.ylabel('loss')25
 # plt.xlabel('epoch')
-# plt.legend(['train', 'test'], loc='upper left')
+# plt.legend(['train', 'test'], l25oc='upper left')
 # plt.savefig('../plots/results/tilt/basicNN_sim_pCjunk_loss.pdf')
 
-print(history.history['acc'])
-print(history.history['val_acc'])
+textfile = open('../keras-results/NN/sim2sim/multic.txt', 'w')
+textfile.write('acc \n')
+textfile.write(str(history.history['acc']))
+textfile.write('\n')
+textfile.write('\nval_acc \n')
+textfile.write(str(history.history['val_acc']))
+textfile.write('\n')
+textfile.write('\nconfusion matrices \n')
+for cm in metrics.val_cms:
+    textfile.write(str(cm))
+    textfile.write('\n')
 
 print("Maximum Validation Accuracy Reached: %.5f%%" % max(history.history['val_acc']))
 

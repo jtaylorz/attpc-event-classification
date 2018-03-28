@@ -55,7 +55,7 @@ real_C_labels = np.ones((real_C.shape[0],))
 real_X = np.vstack((np.array(real_p), np.array(real_C)))
 real_labels = np.hstack((real_p_labels, real_C_labels))
 
-X_train, X_test, labels_train, labels_test = train_test_split(real_X, real_labels, test_size=0.25, random_state=42)
+X_train, X_test, labels_train, labels_test = train_test_split(real_X, real_labels, test_size=validation_split, random_state=42)
 
 def save_bottleneck_features():
 
@@ -104,17 +104,14 @@ def train_top_model():
     plt.legend(['train data', 'test data'], loc='upper left')
     #plt.savefig('../plots/results/CNN/CNN_real2real_pC_acc.pdf')
 
-    print(history.history['acc'])
-    print(history.history['val_acc'])
-
     textfile = open('../keras-results/CNN/real2real/pC.txt', 'w')
     textfile.write('acc \n')
     textfile.write(str(history.history['acc']))
     textfile.write('\n')
-    textfile.write('\n val_acc \n')
+    textfile.write('\nval_acc \n')
     textfile.write(str(history.history['val_acc']))
     textfile.write('\n')
-    textfile.write('\n confusion matrices \n')
+    textfile.write('\nconfusion matrices \n')
     for cm in metrics.val_cms:
         textfile.write(str(cm))
         textfile.write('\n')

@@ -115,10 +115,10 @@ def train_top_model():
     textfile.write('acc \n')
     textfile.write(str(history.history['acc']))
     textfile.write('\n')
-    textfile.write('\n val_acc \n')
+    textfile.write('\nval_acc \n')
     textfile.write(str(history.history['val_acc']))
     textfile.write('\n')
-    textfile.write('\n confusion matrices \n')
+    textfile.write('\nconfusion matrices \n')
     for cm in metrics.val_cms:
         textfile.write(str(cm))
         textfile.write('\n')
