@@ -28,5 +28,8 @@ req-files/*
 # cnn-plots directory
 cnn-plots/*
 
+# keras-results directory
+keras-results/*
+
 # DS_store
 .DS_store
