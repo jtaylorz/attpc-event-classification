@@ -1,17 +1,22 @@
 """
-basicNN_sim2sim_multic.py
-==========================
+basicNN_real2real_pCnoise.py
+============================
 
 Testing a basic neural network on nuclear scattering data.
-Trains on simulated tests on simulated.
+Binary classification of protons and "everything else" (carbon and noise)
+Trains on real tests on real.
 """
 import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense
 from sklearn.model_selection import train_test_split
-from keras.utils import np_utils
 import numpy as np
 import scipy as sp
+
+import sys
+sys.path.insert(0, '../modules/')
+import metrics
+metrics = metrics.BinaryMetrics()
 
 #fix random seed
 np.random.seed(7)
@@ -19,48 +24,47 @@ epochs = 100
 validation_split = 0.25
 batch_size = 10
 
-import sys
-sys.path.insert(0, '../modules/')
-import metrics
-metrics = metrics.MulticlassMetrics()
+#real data
+p_0130 = sp.sparse.load_npz('../data/real/20x20x20/run_0130_pDisc.npz')
+C_0130 = sp.sparse.load_npz('../data/real/20x20x20/run_0130_CDisc.npz')
+noise_0130 = sp.sparse.load_npz('../data/real/20x20x20/run_0130_junkDisc.npz')
+p_0210 = sp.sparse.load_npz('../data/real/20x20x20/run_0210_pDisc.npz')
+C_0210 = sp.sparse.load_npz('../data/real/20x20x20/run_0210_CDisc.npz')
+noise_0210 = sp.sparse.load_npz('../data/real/20x20x20/run_0210_junkDisc.npz')
 
-## 8 things to change total per run ##
-#loading and splitting data
-p_data = sp.sparse.load_npz('../data/tilt/20x20x20/pDisc_40000_20x20x20_tilt_largeEvts.npz')
-C_data = sp.sparse.load_npz('../data/tilt/20x20x20/CDisc_40000_20x20x20_tilt_largeEvts.npz')
-noise_data = sp.sparse.load_npz('../data/tilt/20x20x20/noiseDisc_40000_20x20x20.npz')
+p_real = sp.sparse.vstack([p_0130, p_0210], format='csr')
+C_real = sp.sparse.vstack([C_0130, C_0210], format='csr')
+noise_real = sp.sparse.vstack([noise_0130, noise_0210], format='csr')
 
-p_labels = np.zeros((p_data.shape[0],))
-C_labels = np.ones((C_data.shape[0],))
-noise_labels = np.full((noise_data.shape[0],), 2)
+#labels
+p_real_labels = np.zeros((p_real.shape[0],))
+C_real_labels = np.ones((C_real.shape[0],))
+noise_real_labels = np.ones((noise_real.shape[0],))
 
-# full_data = sp.sparse.vstack([p_data, C_data], format='csr')
-# full_labels = np.hstack((p_labels, C_labels))
-full_data = sp.sparse.vstack([p_data, C_data, noise_data], format='csr')
-full_labels_categorical = np.hstack((p_labels, C_labels, noise_labels))
-full_labels = np_utils.to_categorical(full_labels_categorical)
+#merging
+full_real_data = sp.sparse.vstack([p_real, C_real, noise_real], format='csr')
+full_real_labels = np.hstack((p_real_labels, C_real_labels, noise_real_labels))
 
-print(full_data.shape)
-print(full_labels_categorical.shape)
-print(full_labels.shape)
-
-X_train, X_test, labels_train, labels_test = train_test_split(full_data, full_labels, test_size=validation_split, random_state=42)
+(train_data, test_data,
+labels_train, labels_test) = train_test_split(full_real_data,
+                                              full_real_labels,
+                                              test_size=validation_split,
+                                              random_state=42)
 
 #define model
 model = Sequential()
-model.add(Dense(128, input_dim=full_data.shape[1], activation='relu'))
-model.add(Dense(full_labels.shape[1], activation='softmax'))
+model.add(Dense(128, input_dim=full_real_data.shape[1], activation='relu'))
+model.add(Dense(1, activation='sigmoid'))
 
 #compile the model
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 #fit the model with a validation set split
-history = model.fit(X_train.todense(), labels_train,
-                    validation_data=(X_test.todense(), labels_test),
+history = model.fit(train_data.todense(), labels_train,
+                    validation_data=(test_data.todense(), labels_test),
                     epochs=epochs,
                     batch_size=batch_size,
                     callbacks=[metrics])
-
 
 print(history.history.keys())
 # summarize history for accuracy
@@ -77,12 +81,12 @@ plt.legend(['train', 'test'], loc='upper left')
 # plt.plot(history.history['loss'])
 # plt.plot(history.history['val_loss'])
 # plt.title('Single Layer NN Loss - p vs. C + junk')
-# plt.ylabel('loss')25
+# plt.ylabel('loss')
 # plt.xlabel('epoch')
-# plt.legend(['train', 'test'], l25oc='upper left')
+# plt.legend(['train', 'test'], loc='upper left')
 # plt.savefig('../plots/results/tilt/basicNN_sim_pCjunk_loss.pdf')
 
-textfile = open('../keras-results/NN/sim2sim/multic.txt', 'w')
+textfile = open('../keras-results/NN/real2real/pCnoise.txt', 'w')
 textfile.write('acc \n')
 textfile.write(str(history.history['acc']))
 textfile.write('\n')

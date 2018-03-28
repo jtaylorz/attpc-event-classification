@@ -1,6 +1,6 @@
 """
-finetuneCNN_sim2sim_multic_largeEvts.py
-=======================================
+finetuneCNN_sim2real_pC.py
+==========================
 
 Testing pretrained/finetunable convolutional neural network solution to event classification
 problem. Model uses a VGG16 architecture pretrained on the ImageNet database to
@@ -9,8 +9,8 @@ etc. A small top model is then trained on top of the VGG16 network to classify
 our data.
 
 Inputs are 128x128 pixel plots of events.
-Baseline sim proton vs. sim Carbon vs. sim junk
-Uses simulated events with > 30 points.
+Dataset of only proton and carbon events
+Baseline train on simulated and test on real
 """
 import matplotlib.pyplot as plt
 import os
@@ -20,13 +20,12 @@ import h5py
 from keras import applications
 from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
-from keras.utils import np_utils
 from sklearn.model_selection import train_test_split
 
 import sys
 sys.path.insert(0, '../modules/')
 import metrics
-metrics = metrics.MulticlassMetrics()
+metrics = metrics.BinaryMetrics()
 
 seed = 7
 np.random.seed(seed)
@@ -39,44 +38,52 @@ validation_split = 0.25
 
 #paths
 hdf5_path = '../cnn-plots/hdf5s/'
-bottleneck_features_train_path = '../models/bottleneck_features_sim2sim_multic_largeEvts_train.npy'
-bottleneck_features_test_path = '../models/bottleneck_features_sim2sim_multic_largeEvts_test.npy'
-top_model_weights_path = '../models/top_model_trained_sim2sim_multic_largeEvts.h5'
+bottleneck_features_train_path = '../models/CNN-sim2real/bottleneck_features_sim2real_pC_train.npy'
+bottleneck_features_test_path = '../models/CNN-sim2real/bottleneck_features_sim2real_pC_test.npy'
+top_model_weights_path = '../models/CNN-sim2real/top_model_trained_sim2real_pC.h5'
 
-#load images from hdf5 files
+#simulated data
 sim_p_file = h5py.File(hdf5_path + 'sim_p_largeEvts.h5', 'r')
 sim_C_file = h5py.File(hdf5_path + 'sim_C_largeEvts.h5', 'r')
-sim_junk_file = h5py.File(hdf5_path + 'sim_junk.h5', 'r')
 
 sim_p = sim_p_file['img']
 sim_C = sim_C_file['img']
-sim_junk = sim_junk_file['img']
 
 #labels
 sim_p_labels = np.zeros((sim_p.shape[0],))
 sim_C_labels = np.ones((sim_C.shape[0],))
-sim_junk_labels = np.full((sim_junk.shape[0],), 2)
 
-sim_X = np.vstack((np.array(sim_p), np.array(sim_C), np.array(sim_junk)))
-sim_labels_categorical = np.hstack((sim_p_labels, sim_C_labels, sim_junk_labels))
-#one-hot encode for use with categorical_crossentropy
-sim_labels = np_utils.to_categorical(sim_labels_categorical)
+sim_X = np.vstack((np.array(sim_p), np.array(sim_C)))
+sim_labels = np.hstack((sim_p_labels, sim_C_labels))
 
 X_train, X_test, labels_train, labels_test = train_test_split(sim_X, sim_labels, test_size=0.25, random_state=42)
+
+#real data
+real_p_file = h5py.File(hdf5_path + 'real_p.h5', 'r')
+real_C_file = h5py.File(hdf5_path + 'real_C.h5', 'r')
+
+real_p = real_p_file['img']
+real_C = real_C_file['img']
+
+#labels
+real_p_labels = np.zeros((real_p.shape[0],))
+real_C_labels = np.ones((real_C.shape[0],))
+
+real_X = np.vstack((np.array(real_p), np.array(real_C)))
+real_labels = np.hstack((real_p_labels, real_C_labels))
 
 def save_bottleneck_features():
 
     #build VGG16 network
     model = applications.VGG16(include_top=False, weights='imagenet')
 
-    print("Calculating pre-trained weights for train set...")
+    print("Calculating pre-trained weights for SIMULATED train set...")
     bottleneck_features_train  = model.predict(X_train)
-    np.save(open(bottleneck_features_train_path, 'wb'), bottleneck_features_train)
+    #np.save(open(bottleneck_features_train_path, 'wb'), bottleneck_features_train)
 
-    print("Calculating pre-trained weights for test set...")
-    bottleneck_features_test = model.predict(X_test)
+    print("Calculating pre-trained weights for REAL test set...")
+    bottleneck_features_test  = model.predict(real_X)
     np.save(open(bottleneck_features_test_path, 'wb'), bottleneck_features_test)
-
 
 def train_top_model():
     train_data = np.load(open(bottleneck_features_train_path, 'rb'))
@@ -86,15 +93,15 @@ def train_top_model():
     model.add(Flatten(input_shape=train_data.shape[1:]))
     model.add(Dense(256, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(sim_labels.shape[1], activation='softmax'))
+    model.add(Dense(1, activation='sigmoid'))
 
-    model.compile(loss='categorical_crossentropy',
-                  optimizer='adam',
+    model.compile(loss='binary_crossentropy',
+                  optimizer='rmsprop',
                   metrics=['accuracy'])
 
     print("Training top model on training data")
     history = model.fit(train_data, labels_train,
-                        validation_data = (test_data, labels_test),
+                        validation_data = (test_data, real_labels),
                         shuffle='batch',
                         batch_size=batch_size,
                         epochs=epochs,
@@ -105,13 +112,13 @@ def train_top_model():
     plt.figure(1)
     plt.plot(history.history['acc'])
     plt.plot(history.history['val_acc'])
-    plt.title('CNN Accuracy Simulated Data - Multiclass (> 30 points)')
+    plt.title('CNN Accuracy Simulated Data - p vs. C (> 30 points)')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train data', 'test data'], loc='upper left')
-    #plt.savefig('../plots/results/CNN/CNN_sim2sim_multic_largeEvts_acc.pdf')
+    #plt.savefig('../plots/results/CNN/CNN_sim2sim_pC_largeEvts_acc.pdf')
 
-    textfile = open('../keras-results/CNN/sim2sim/multic.txt', 'w')
+    textfile = open('../keras-results/CNN/sim2real/pC.txt', 'w')
     textfile.write('acc \n')
     textfile.write(str(history.history['acc']))
     textfile.write('\n')

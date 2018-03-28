@@ -1,6 +1,6 @@
 """
-finetuneCNN_sim2sim_multic_largeEvts.py
-=======================================
+finetuneCNN_sim2sim_pC.py
+=========================
 
 Testing pretrained/finetunable convolutional neural network solution to event classification
 problem. Model uses a VGG16 architecture pretrained on the ImageNet database to
@@ -9,8 +9,7 @@ etc. A small top model is then trained on top of the VGG16 network to classify
 our data.
 
 Inputs are 128x128 pixel plots of events.
-Baseline sim proton vs. sim Carbon vs. sim junk
-Uses simulated events with > 30 points.
+Baseline real proton vs. real Carbon vs. real junk
 """
 import matplotlib.pyplot as plt
 import os
@@ -26,7 +25,7 @@ from sklearn.model_selection import train_test_split
 import sys
 sys.path.insert(0, '../modules/')
 import metrics
-metrics = metrics.MulticlassMetrics()
+metrics = metrics.BinaryMetrics()
 
 seed = 7
 np.random.seed(seed)
@@ -39,30 +38,28 @@ validation_split = 0.25
 
 #paths
 hdf5_path = '../cnn-plots/hdf5s/'
-bottleneck_features_train_path = '../models/bottleneck_features_sim2sim_multic_largeEvts_train.npy'
-bottleneck_features_test_path = '../models/bottleneck_features_sim2sim_multic_largeEvts_test.npy'
-top_model_weights_path = '../models/top_model_trained_sim2sim_multic_largeEvts.h5'
+bottleneck_features_train_path = '../models/bottleneck_features_real2real_pCnoise_train.npy'
+bottleneck_features_test_path = '../models/bottleneck_features_real2real_pCnoise_test.npy'
+top_model_weights_path = '../models/top_model_trained_real2real_pCnoise.h5'
 
 #load images from hdf5 files
-sim_p_file = h5py.File(hdf5_path + 'sim_p_largeEvts.h5', 'r')
-sim_C_file = h5py.File(hdf5_path + 'sim_C_largeEvts.h5', 'r')
-sim_junk_file = h5py.File(hdf5_path + 'sim_junk.h5', 'r')
+real_p_file = h5py.File(hdf5_path + 'real_p.h5', 'r')
+real_C_file = h5py.File(hdf5_path + 'real_C.h5', 'r')
+real_junk_file = h5py.File(hdf5_path + 'real_junk.h5', 'r')
 
-sim_p = sim_p_file['img']
-sim_C = sim_C_file['img']
-sim_junk = sim_junk_file['img']
+real_p = real_p_file['img']
+real_C = real_C_file['img']
+real_junk = real_junk_file['img']
 
 #labels
-sim_p_labels = np.zeros((sim_p.shape[0],))
-sim_C_labels = np.ones((sim_C.shape[0],))
-sim_junk_labels = np.full((sim_junk.shape[0],), 2)
+real_p_labels = np.zeros((real_p.shape[0],))
+real_C_labels = np.ones((real_C.shape[0],))
+real_junk_labels = np.full((real_junk.shape[0],), 2)
 
-sim_X = np.vstack((np.array(sim_p), np.array(sim_C), np.array(sim_junk)))
-sim_labels_categorical = np.hstack((sim_p_labels, sim_C_labels, sim_junk_labels))
-#one-hot encode for use with categorical_crossentropy
-sim_labels = np_utils.to_categorical(sim_labels_categorical)
+real_X = np.vstack((np.array(real_p), np.array(real_C), np.array(real_junk)))
+real_labels = np.hstack((real_p_labels, real_C_labels, real_junk_labels))
 
-X_train, X_test, labels_train, labels_test = train_test_split(sim_X, sim_labels, test_size=0.25, random_state=42)
+X_train, X_test, labels_train, labels_test = train_test_split(real_X, real_labels, test_size=validation_split, random_state=42)
 
 def save_bottleneck_features():
 
@@ -86,10 +83,10 @@ def train_top_model():
     model.add(Flatten(input_shape=train_data.shape[1:]))
     model.add(Dense(256, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(sim_labels.shape[1], activation='softmax'))
+    model.add(Dense(1, activation='sigmoid'))
 
-    model.compile(loss='categorical_crossentropy',
-                  optimizer='adam',
+    model.compile(loss='binary_crossentropy',
+                  optimizer='rmsprop',
                   metrics=['accuracy'])
 
     print("Training top model on training data")
@@ -105,13 +102,13 @@ def train_top_model():
     plt.figure(1)
     plt.plot(history.history['acc'])
     plt.plot(history.history['val_acc'])
-    plt.title('CNN Accuracy Simulated Data - Multiclass (> 30 points)')
+    plt.title('CNN Accuracy Real Data - Multiclass')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train data', 'test data'], loc='upper left')
-    #plt.savefig('../plots/results/CNN/CNN_sim2sim_multic_largeEvts_acc.pdf')
+    #plt.savefig('../plots/results/CNN/CNN_real2real_multic_acc_binarycross.pdf')
 
-    textfile = open('../keras-results/CNN/sim2sim/multic.txt', 'w')
+    textfile = open('../keras-results/CNN/real2real/pCnoise.txt', 'w')
     textfile.write('acc \n')
     textfile.write(str(history.history['acc']))
     textfile.write('\n')

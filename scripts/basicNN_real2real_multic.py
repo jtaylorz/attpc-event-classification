@@ -47,8 +47,8 @@ full_real_labels_categorical = np.hstack((p_real_labels, C_real_labels, noise_re
 full_real_labels = np_utils.to_categorical(full_real_labels_categorical)
 
 (real_train_data, real_test_data,
-real_labels_train, real_labels_test) = train_test_split(full_sim_data,
-                                                        full_sim_labels,
+real_labels_train, real_labels_test) = train_test_split(full_real_data,
+                                                        full_real_labels,
                                                         test_size=validation_split,
                                                         random_state=42)
 #define model
@@ -92,6 +92,12 @@ textfile.write(str(history.history['acc']))
 textfile.write('\n')
 textfile.write('\nval_acc \n')
 textfile.write(str(history.history['val_acc']))
+textfile.write('\n')
+textfile.write('\nloss \n')
+textfile.write(str(history.history['loss']))
+textfile.write('\n')
+textfile.write('\nval_loss \n')
+textfile.write(str(history.history['val_loss']))
 textfile.write('\n')
 textfile.write('\nconfusion matrices \n')
 for cm in metrics.val_cms:

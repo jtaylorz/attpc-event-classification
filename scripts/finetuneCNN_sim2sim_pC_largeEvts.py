@@ -64,7 +64,7 @@ def save_bottleneck_features():
     model = applications.VGG16(include_top=False, weights='imagenet')
 
     print("Calculating pre-trained weights for train set...")
-    #bottleneck_features_train  = model.predict(X_train)
+    bottleneck_features_train  = model.predict(X_train)
     #np.save(open(bottleneck_features_train_path, 'wb'), bottleneck_features_train)
 
     print("Calculating pre-trained weights for test set...")
@@ -110,6 +110,12 @@ def train_top_model():
     textfile.write('\n')
     textfile.write('\nval_acc \n')
     textfile.write(str(history.history['val_acc']))
+    textfile.write('\n')
+    textfile.write('\nloss \n')
+    textfile.write(str(history.history['loss']))
+    textfile.write('\n')
+    textfile.write('\nval_loss \n')
+    textfile.write(str(history.history['val_loss']))
     textfile.write('\n')
     textfile.write('\nconfusion matrices \n')
     for cm in metrics.val_cms:
