@@ -65,7 +65,7 @@ def save_bottleneck_features():
 
     print("Calculating pre-trained weights for train set...")
     bottleneck_features_train  = model.predict(X_train)
-    #np.save(open(bottleneck_features_train_path, 'wb'), bottleneck_features_train)
+    np.save(open(bottleneck_features_train_path, 'wb'), bottleneck_features_train)
 
     print("Calculating pre-trained weights for test set...")
     bottleneck_features_test  = model.predict(X_test)

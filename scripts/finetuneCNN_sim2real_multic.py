@@ -20,6 +20,7 @@ import h5py
 from keras import applications
 from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
+from keras.utils import np_utils
 from sklearn.model_selection import train_test_split
 
 import sys
