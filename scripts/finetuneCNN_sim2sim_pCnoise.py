@@ -12,7 +12,6 @@ Inputs are 128x128 pixel plots of events.
 Binary classification
 Baseline sim proton vs. sim Carbon + sim junk
 """
-import matplotlib.pyplot as plt
 import os
 import numpy as np
 import h5py
@@ -99,15 +98,6 @@ def train_top_model():
                         callbacks=[metrics])
 
     print(history.history.keys())
-    # summarize history for accuracy
-    plt.figure(1)
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
-    plt.title('CNN Accuracy Simulated Data - Multiclass (> 30 points)')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train data', 'test data'], loc='upper left')
-    #plt.savefig('../plots/results/CNN/CNN_sim2sim_multic_largeEvts_acc.pdf')
 
     textfile = open('../keras-results/CNN/sim2sim/pCnoise.txt', 'w')
     textfile.write('acc \n')
