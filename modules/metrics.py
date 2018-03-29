@@ -43,8 +43,8 @@ class BinaryMetrics(Callback):
         val_targ = self.validation_data[1]
         _val_cm = confusion_matrix(val_targ, val_predict)
         self.val_cms.append(_val_cm)
-        #print('\n')
-        #print(_val_cm)
+        print('\n')
+        print(_val_cm)
         return
 
 class MulticlassMetrics(Callback):

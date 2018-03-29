@@ -20,7 +20,7 @@ metrics = metrics.BinaryMetrics()
 
 #fix random seed
 np.random.seed(7)
-epochs = 50
+epochs = 100
 validation_split = 0.25
 batch_size = 10
 
