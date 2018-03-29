@@ -56,11 +56,11 @@ noise_real = sp.sparse.vstack([noise_0130, noise_0210], format='csr')
 #labels
 p_real_labels = np.zeros((p_real.shape[0],))
 C_real_labels = np.ones((C_real.shape[0],))
-noise_real_labels = np.ones(noise_real.shape[0],))
+noise_real_labels = np.ones((noise_real.shape[0],))
 
 #merging
 full_real_data = sp.sparse.vstack([p_real, C_real, noise_real], format='csr')
-full_real_labels_categorical = np.hstack((p_real_labels, C_real_labels, noise_real_labels))
+full_real_labels = np.hstack((p_real_labels, C_real_labels, noise_real_labels))
 
 
 #define model

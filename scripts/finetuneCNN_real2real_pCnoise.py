@@ -54,7 +54,7 @@ real_junk = real_junk_file['img']
 #labels
 real_p_labels = np.zeros((real_p.shape[0],))
 real_C_labels = np.ones((real_C.shape[0],))
-real_junk_labels = np.full((real_junk.shape[0],), 2)
+real_junk_labels = np.ones((real_junk.shape[0],))
 
 real_X = np.vstack((np.array(real_p), np.array(real_C), np.array(real_junk)))
 real_labels = np.hstack((real_p_labels, real_C_labels, real_junk_labels))
