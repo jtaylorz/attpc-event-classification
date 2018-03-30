@@ -57,7 +57,7 @@ class MulticlassMetrics(Callback):
         _val_cm = confusion_matrix(val_targ.argmax(axis=1), val_predict.argmax(axis=1))
         self.val_cms.append(_val_cm)
         print('\n')
-        claeprint(_val_cm)
+        print(_val_cm)
         return
 
 class MetricsOther(Callback):
