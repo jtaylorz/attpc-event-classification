@@ -75,7 +75,7 @@ def discretizeGrid(xyz, x_disc, y_disc, z_disc):
     ----------
     xyz    : point cloud data with shape (n,5) where n is the number of traces
     x_disc : number of slices in x
-    y disc : number of sliceuniform_param_generators in y
+    y disc : number of slices in y
     z_disc : number of slices in z
 
     Returns

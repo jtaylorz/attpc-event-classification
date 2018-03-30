@@ -11,7 +11,6 @@ our data.
 Inputs are 128x128 pixel plots of events.
 Baseline real proton vs. real Carbon vs. real junk
 """
-import matplotlib.pyplot as plt
 import os
 import numpy as np
 import h5py
@@ -98,15 +97,6 @@ def train_top_model():
                         callbacks=[metrics])
 
     print(history.history.keys())
-    # summarize history for accuracy
-    plt.figure(1)
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
-    plt.title('CNN Accuracy Real Data - Multiclass')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train data', 'test data'], loc='upper left')
-    #plt.savefig('../plots/results/CNN/CNN_real2real_multic_acc_binarycross.pdf')
 
     textfile = open('../keras-results/CNN/real2real/pCnoise.txt', 'w')
     textfile.write('acc \n')
