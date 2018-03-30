@@ -12,7 +12,7 @@ Inputs are 128x128 pixel plots of events.
 Multiclass classification of protons vs. carbon vs. noise
 Baseline train on simulated and test on real
 """
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import os
 import numpy as np
 import h5py
@@ -119,15 +119,15 @@ def train_top_model():
                         callbacks=[metrics])
 
     print(history.history.keys())
-    # summarize history for accuracy
-    plt.figure(1)
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
-    plt.title('CNN Accuracy Simulated Data - p vs. C (> 30 points)')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train data', 'test data'], loc='upper left')
-    #plt.savefig('../plots/results/CNN/CNN_sim2sim_pC_largeEvts_acc.pdf')
+    # # summarize history for accuracy
+    # plt.figure(1)
+    # plt.plot(history.history['acc'])
+    # plt.plot(history.history['val_acc'])
+    # plt.title('CNN Accuracy Simulated Data - p vs. C (> 30 points)')
+    # plt.ylabel('accuracy')
+    # plt.xlabel('epoch')
+    # plt.legend(['train data', 'test data'], loc='upper left')
+    # #plt.savefig('../plots/results/CNN/CNN_sim2sim_pC_largeEvts_acc.pdf')
 
     textfile = open('../keras-results/CNN/sim2real/multi.txt', 'w')
     textfile.write('acc \n')
