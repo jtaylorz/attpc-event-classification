@@ -129,7 +129,7 @@ def train_top_model():
     # plt.legend(['train data', 'test data'], loc='upper left')
     # #plt.savefig('../plots/results/CNN/CNN_sim2sim_pC_largeEvts_acc.pdf')
 
-    textfile = open('../keras-results/CNN/sim2real/multi.txt', 'w')
+    textfile = open('../keras-results/CNN/sim2real/multic.txt', 'w')
     textfile.write('acc \n')
     textfile.write(str(history.history['acc']))
     textfile.write('\n')

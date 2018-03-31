@@ -39,9 +39,9 @@ validation_split = 0.25
 
 #paths
 hdf5_path = '../cnn-plots/hdf5s/'
-bottleneck_features_train_path = '../models/bottleneck_features_sim2sim_multic_largeEvts_train.npy'
-bottleneck_features_test_path = '../models/bottleneck_features_sim2sim_multic_largeEvts_test.npy'
-top_model_weights_path = '../models/top_model_trained_sim2sim_multic_largeEvts.h5'
+bottleneck_features_train_path = '../models/CNN-sim2sim/bottleneck_features_sim2sim_multic_largeEvts_train.npy'
+bottleneck_features_test_path = '../models/CNN-sim2sim/bottleneck_features_sim2sim_multic_largeEvts_test.npy'
+top_model_weights_path = '../models/CNN-sim2sim/top_model_trained_sim2sim_multic_largeEvts.h5'
 
 #load images from hdf5 files
 sim_p_file = h5py.File(hdf5_path + 'sim_p_largeEvts.h5', 'r')

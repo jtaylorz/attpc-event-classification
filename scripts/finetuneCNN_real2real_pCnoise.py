@@ -37,9 +37,9 @@ validation_split = 0.25
 
 #paths
 hdf5_path = '../cnn-plots/hdf5s/'
-bottleneck_features_train_path = '../models/bottleneck_features_real2real_pCnoise_train.npy'
-bottleneck_features_test_path = '../models/bottleneck_features_real2real_pCnoise_test.npy'
-top_model_weights_path = '../models/top_model_trained_real2real_pCnoise.h5'
+bottleneck_features_train_path = '../models/CNN-real2real/bottleneck_features_real2real_pCnoise_train.npy'
+bottleneck_features_test_path = '../models/CNN-real2real/bottleneck_features_real2real_pCnoise_test.npy'
+top_model_weights_path = '../models/CNN-real2real/top_model_trained_real2real_pCnoise.h5'
 
 #load images from hdf5 files
 real_p_file = h5py.File(hdf5_path + 'real_p.h5', 'r')
