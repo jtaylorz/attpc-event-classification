@@ -96,7 +96,7 @@ def train_top_model():
     model.add(Dense(1, activation='sigmoid'))
 
     model.compile(loss='binary_crossentropy',
-                  optimizer='rmsprop',
+                  optimizer='adam',
                   metrics=['accuracy'])
 
     print("Training top model on training data")
